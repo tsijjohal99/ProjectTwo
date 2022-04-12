@@ -8,6 +8,7 @@ add_library(
     knight.h
     rook.h
     pawn.h
+    pieceColourType.h
 )
 
 target_include_directories(theIncludes PUBLIC ../"{CMAKE-CURRENT_SOURCE_DIR}"/src)

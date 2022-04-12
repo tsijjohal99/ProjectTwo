@@ -1,8 +1,14 @@
 #include "rook.h"
+#include "pieceColourType.h"
 
-Rook::Queen::ChessPiece::ChessPiece(int square[2], bool colour) {
-    location[0] = square[0];
-    location[1] = square[1];
-    white = colour;
-    symbol = (white) ? 'R' : 'r';
+Rook::Rook(int square[2], PieceColourType colour) : Queen(square, colour) {
+    symbol = (pieceColour == PieceColourType::WHITE) ? 'R' : 'r';
+}
+
+bool Rook::getHasMoved() {
+    return hasMoved;
+}
+
+void Rook::setHasMoved(bool newMove) {
+    hasMoved == newMove;
 }

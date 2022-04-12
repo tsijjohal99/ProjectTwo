@@ -1,7 +1,10 @@
 #pragma once
+#include "pieceColourType.h"
 #include "chessPiece.h"
 
 class Knight : public ChessPiece {
     public:
-        std::vector<std::vector<bool>> possibleMoves(std::vector<std::vector<char>> grid);
+        Knight(int square[2], PieceColourType colour);
+
+        std::vector<std::vector<bool>> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
 };
