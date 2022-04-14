@@ -5,13 +5,11 @@
 
 class King : public Queen {
     
-    protected:
-        int maxMovement = 2;
-        bool hasMoved = false;
-    
     public:
         King(int square[2], PieceColourType colour);
 
         void checkCastle(std::list<std::string> &whereMove, std::vector<std::vector<ChessPiece*>> &grid);
         std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
+        std::string constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+        std::string constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid);
 };

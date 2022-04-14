@@ -7,8 +7,8 @@ class Board {
     private:
         int boardSize = 8;
         std::vector<std::vector<ChessPiece*>> grid;
-        bool isCheck;
-        bool isCheckmate;
+        bool isCheck = false;
+        bool isCheckmate = false;
         PieceColourType whoseTurn;
         int blackKing[2];
         int whiteKing[2];
@@ -23,9 +23,9 @@ class Board {
 
         void displayBoard();
         void checkCheck(std::list<std::string> &theLegalMoves);
-        void checkCheckmate(std::list<std::string> &theLegalMoves);
+        bool checkCheckmate();
         std::list<std::string> legalMoves();
-        void makeMove(std::string move);
+        bool makeMove(std::string move);
         void createPiece(ChessPiece *piece, int a, int b);
         void removePiece(ChessPiece *piece);
         void deleteBoard();

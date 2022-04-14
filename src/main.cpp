@@ -16,14 +16,13 @@ void createNewGame() {
             break;
         } else {
             system("cls");
-            game.makeMove(input);
+            playGame = game.makeMove(input);
         }
     }
     game.deleteBoard();
 }
 
 bool displayMenu() {
-    system("cls");
     char menuChoice;
     std::cout << "Welcome to Jeevan's Chess Simulator!" << std::endl;
     std::cout << "" << std::endl;
@@ -40,6 +39,7 @@ bool displayMenu() {
             return false;
         }
         default: {
+            system("cls");
             std::cout << "Oh no, that didn't compute, try inputting something useful." << std::endl;
         }
     }
@@ -47,6 +47,8 @@ bool displayMenu() {
 }
 
 int main() {
+    std::cout << std::unitbuf;
+
     bool menu = true;
     while (menu) {
         menu = displayMenu();

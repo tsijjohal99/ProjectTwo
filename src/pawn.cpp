@@ -2,6 +2,7 @@
 #include "pawn.h"
 #include "pieceColourType.h"
 #include <list>
+#include <string>
 
 Pawn::Pawn(int square[2], PieceColourType colour) : ChessPiece(square, colour) {
     symbol = 'P';
@@ -24,7 +25,6 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
     int lookRight[2];
     if (getLocation()[1] != end) {
         if (spaceEmpty(grid, look)) {
-            whereMove.push_back(constructMoveEmpty(look));
             promotion(look, end, whereMove, constructMoveEmpty(look));
             look[1] += neg*1;
             if (getLocation()[1] == start || spaceEmpty(grid, look)) {
@@ -58,17 +58,17 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
 
 std::string Pawn::constructMoveEmpty(int look[]) {
     std::string theMove = "";
-    theMove.push_back(char('a' + look[0]));
-    theMove.push_back(char(look[1] + 1));
+    theMove += char('a' + look[0]);
+    theMove += char('1' + look[1]);
     return theMove;
 }
 
 std::string Pawn::constructMoveEnemy(int look[]) {
     std::string theMove = "";
-    theMove.push_back(char(location[0] + 'a'));
-    theMove.push_back('x');
-    theMove.push_back(char('a' + look[0]));
-    theMove.push_back(char(look[1] + 1));
+    theMove += char('a' + location[0]);
+    theMove += 'x';
+    theMove += char('a' + look[0]);
+    theMove += char('1' + look[1]);
     return theMove;
 }
 

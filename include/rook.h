@@ -11,4 +11,9 @@ class Rook : public Queen {
     public:
         Rook(int square[2], PieceColourType colour);
 
+        bool constructRookVertical(int look[], std::vector<std::vector<ChessPiece*>> &grid, std::string &theMove, bool foundSecond, int i, bool enemy);
+        bool constructRookHorizontal(int look[], std::vector<std::vector<ChessPiece*>> &grid, std::string &theMove, bool foundSecond, int i, bool enemy);
+        std::string constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+        std::string constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+
 };

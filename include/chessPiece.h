@@ -28,6 +28,6 @@ class ChessPiece {
         virtual std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
         bool spaceEmpty(std::vector<std::vector<ChessPiece*>> &grid, int look[]);
         bool spaceEnemy(std::vector<std::vector<ChessPiece*>> &grid, int look[]);
-        std::string constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid);
-        std::string constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+        virtual std::string constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+        virtual std::string constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid);
 };
