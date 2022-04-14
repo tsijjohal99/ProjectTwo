@@ -1,6 +1,7 @@
 #pragma once
 #include "pieceColourType.h"
 #include "queen.h"
+#include <list>
 
 class King : public Queen {
     
@@ -11,9 +12,6 @@ class King : public Queen {
     public:
         King(int square[2], PieceColourType colour);
 
-        bool getHasMoved();
-        void setHasMoved(bool newMove);
-
-        void checkCastle(std::vector<std::vector<bool>> &whereMove, std::vector<std::vector<ChessPiece*>> &grid);
-        std::vector<std::vector<bool>> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
+        void checkCastle(std::list<std::string> &whereMove, std::vector<std::vector<ChessPiece*>> &grid);
+        std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
 };

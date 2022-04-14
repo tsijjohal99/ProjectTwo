@@ -1,6 +1,7 @@
 #pragma once
 #include "pieceColourType.h"
 #include "chessPiece.h"
+#include <list>
 
 class Queen : public ChessPiece {
 
@@ -15,8 +16,8 @@ class Queen : public ChessPiece {
         bool getMovementStraight();
         bool getMovementDiag();
         
-        void Queen::straight(std::vector<std::vector<bool>> &whereMove, std::vector<std::vector<ChessPiece*>> &grid, int index);
-        void Queen::diagonal(std::vector<std::vector<bool>> &whereMove, std::vector<std::vector<ChessPiece*>> &grid, int neg);
-        std::vector<std::vector<bool>> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
+        std::list<std::string> straight(std::vector<std::vector<ChessPiece*>> &grid, int index);
+        std::list<std::string> diagonal(std::vector<std::vector<ChessPiece*>> &grid, int neg);
+        std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
     
 }; 

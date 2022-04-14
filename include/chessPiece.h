@@ -2,6 +2,7 @@
 #include "pieceColourType.h"
 #include <iostream>
 #include <vector>
+#include <list>
 
 class ChessPiece {
 
@@ -9,18 +10,24 @@ class ChessPiece {
         int location[2];
         char symbol = ' ';
         PieceColourType pieceColour;
+        bool hasMoved = false;
+        bool enPassant = false;
 
     public:
         ChessPiece(int square[2], PieceColourType colour);
 
         void setLocation(std::string square);
-        int * getLocation();
+        int *getLocation();
         char getSymbol();
-        virtual bool getHasMoved();
+        bool getHasMoved();
+        bool getEnPassant();
+        void setHasMoved(bool has_moved);
+        void setEnPassant(bool en_passant);
         PieceColourType getPieceColour();
 
-        void move(int square[2], std::vector<std::vector<ChessPiece*>> &grid);
-        virtual std::vector<std::vector<bool>> possibleMoves(std::vector<std::vector<ChessPiece*>> grid);
+        virtual std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
         bool spaceEmpty(std::vector<std::vector<ChessPiece*>> &grid, int look[]);
         bool spaceEnemy(std::vector<std::vector<ChessPiece*>> &grid, int look[]);
+        std::string constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+        std::string constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid);
 };

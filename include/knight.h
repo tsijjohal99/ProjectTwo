@@ -1,10 +1,11 @@
 #pragma once
 #include "pieceColourType.h"
 #include "chessPiece.h"
+#include <list>
 
 class Knight : public ChessPiece {
     public:
         Knight(int square[2], PieceColourType colour);
 
-        std::vector<std::vector<bool>> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
+        std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
 };

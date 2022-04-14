@@ -1,52 +1,37 @@
 #include "king.h"
 #include "pieceColourType.h"
+#include <list>
 
 King::King(int square[2], PieceColourType colour) : Queen(square, colour) {
-    symbol = (pieceColour == PieceColourType::WHITE) ? 'K' : 'k';
+    symbol = 'K';
 }
 
-bool King::getHasMoved() {
-    return hasMoved;
-}
-
-void King::setHasMoved(bool newMove) {
-    hasMoved = newMove;
-}
-
-void King::checkCastle(std::vector<std::vector<bool>> &whereMove, std::vector<std::vector<ChessPiece*>> &grid) {
+void King::checkCastle(std::list<std::string> &whereMove, std::vector<std::vector<ChessPiece*>> &grid) {
     if (!hasMoved) {
-        int y;
-        char rookSymbol;
-        if (getPieceColour() == PieceColourType::WHITE) {
-            y = 0;
-            rookSymbol = 'R';
-        } else {
-            y = 7;
-            rookSymbol = 'r';
-        }
+        char rookSymbol = 'R';
+        int y = (getPieceColour() == PieceColourType::WHITE) ? 0 : 7;
         if (grid[0][y]->getSymbol() == rookSymbol) {
             if (!grid[0][y]->getHasMoved() 
-            && !hasMoved 
             && grid[1][y]->getPieceColour() == PieceColourType::UNASSIGNED
             && grid[2][y]->getPieceColour() == PieceColourType::UNASSIGNED
-            && grid[3][y]->getPieceColour() == PieceColourType::UNASSIGNED) {
-                whereMove[2][y] == true;
+            && grid[3][y]->getPieceColour() == PieceColourType::UNASSIGNED) { 
+                whereMove.push_back("0-0-0");
             }
         }
         if (grid[7][y]->getSymbol() == rookSymbol) {
             if (!grid[7][y]->getHasMoved() 
-            && !hasMoved 
             && grid[6][y]->getPieceColour() == PieceColourType::UNASSIGNED
             && grid[5][y]->getPieceColour() == PieceColourType::UNASSIGNED) {
-                whereMove[6][y] == true;
+                whereMove.push_back("0-0");
             }
         }
     }
 }
 
-std::vector<std::vector<bool>> King::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid) {
-    std::vector<std::vector<bool>> whereMove = Queen::possibleMoves(grid);
-    if (getSymbol() == 'K' || getSymbol() == 'k') {
+std::list<std::string> King::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid) {
+    std::list<std::string> whereMove = Queen::possibleMoves(grid);
+    if (symbol == 'K') {
         checkCastle(whereMove, grid);
     }
+    return whereMove;
 }

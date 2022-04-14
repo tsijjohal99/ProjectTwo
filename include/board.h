@@ -14,7 +14,7 @@ class Board {
         int whiteKing[2];
 
     public:
-        Board(int size);
+        Board();
 
         int getBoardSize();
         std::vector<std::vector<ChessPiece*>> getGrid();
@@ -22,10 +22,11 @@ class Board {
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
 
         void displayBoard();
-        bool checkCheck();
-        bool checkCheckmate();
+        void checkCheck(std::list<std::string> &theLegalMoves);
+        void checkCheckmate(std::list<std::string> &theLegalMoves);
         std::list<std::string> legalMoves();
         void makeMove(std::string move);
-        void createPiece(std::string create);
-        void removePiece(std::string remove);
+        void createPiece(ChessPiece *piece, int a, int b);
+        void removePiece(ChessPiece *piece);
+        void deleteBoard();
 };

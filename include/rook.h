@@ -11,6 +11,4 @@ class Rook : public Queen {
     public:
         Rook(int square[2], PieceColourType colour);
 
-        bool getHasMoved();
-        void setHasMoved(bool newMove);
 };
