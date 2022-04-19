@@ -18,13 +18,16 @@ class Board {
 
         int getBoardSize();
         std::vector<std::vector<ChessPiece*>> getGrid();
+        PieceColourType getWhoseTurn();
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
 
         void displayBoard();
-        void checkCheck(std::list<std::string> &theLegalMoves);
+        std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
+        bool checkCheck();
         bool checkCheckmate();
         std::list<std::string> legalMoves();
+        void displayLegalMoves();
         bool makeMove(std::string move);
         void createPiece(ChessPiece *piece, int a, int b);
         void removePiece(ChessPiece *piece);

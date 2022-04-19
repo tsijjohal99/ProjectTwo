@@ -12,9 +12,9 @@ ChessPiece::ChessPiece(int square[2], PieceColourType colour) {
     symbol = ' ';
 }
 
-void ChessPiece::setLocation(std::string square) {
-    location[1] = square[1] - 1;
-    location[0] = int(char(square[0])) - int('a');
+void ChessPiece::setLocation(int a, int b) {
+    location[1] = b;
+    location[0] = a;
 }
 
 int *ChessPiece::getLocation() {
@@ -64,6 +64,17 @@ bool ChessPiece::spaceEnemy(std::vector<std::vector<ChessPiece*>> &grid, int loo
     } else {
         return false;
     }
+}
+
+std::string ChessPiece::constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy) {
+    std::string theMove = "";
+    theMove += symbol;
+    if (enemy) {
+        theMove += 'x';
+    }
+    theMove += char('a' + look[0]);
+    theMove += char('1' + look[1]);
+    return theMove;
 }
 
 std::string ChessPiece::constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid) {

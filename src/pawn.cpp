@@ -20,19 +20,19 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
         end = 0;
         neg = -1;
     }
-    int look[] = {getLocation()[0], getLocation()[1] + neg*1};
+    int look[] = {location[0], location[1] + neg*1};
     int lookLeft[2];
     int lookRight[2];
-    if (getLocation()[1] != end) {
+    if (location[1] != end) {
         if (spaceEmpty(grid, look)) {
             promotion(look, end, whereMove, constructMoveEmpty(look));
             look[1] += neg*1;
-            if (getLocation()[1] == start || spaceEmpty(grid, look)) {
+            if (location[1] == start || spaceEmpty(grid, look)) {
                 promotion(look, end, whereMove, constructMoveEmpty(look));
             }
             look[1] -= neg*1;
         }
-        if (getLocation()[0] > 0) {
+        if (location[0] > 0) {
             lookLeft[0] = look[0] - 1;
             lookLeft[1] = look[1];
             if (spaceEnemy(grid, lookLeft)) {
@@ -42,7 +42,7 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
                 promotion(look, end, whereMove, constructMoveEnemy(lookLeft));
             }
         }
-        if (getLocation()[0] < 7) {
+        if (location[0] < 7) {
             lookRight[0] = look[0] + 1;
             lookRight[1] = look[1];
             if (spaceEnemy(grid, lookRight)) {

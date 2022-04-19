@@ -1,5 +1,6 @@
 #include <iostream>
 #include "board.h"
+#include "pieceColourType.h"
 
 void createNewGame() {
     Board game;
@@ -8,12 +9,23 @@ void createNewGame() {
         std::cout << "" << std::endl;
         game.displayBoard();
         std::cout << "" << std::endl;
-        std::cout << "Please enter a legal move or 0 to quit game. " << std::endl;
+        if (game.getWhoseTurn() == PieceColourType::WHITE) {
+            std::cout << "White's Turn" << std::endl;
+        } else {
+            std::cout << "Black's Turn" << std::endl;
+        }
+        std::cout << "Please enter a legal move." << std::endl;
+        std::cout << "Press 1 to list the possible moves. " << std::endl;
+        std::cout << "Press 0 to quit game. " << std::endl;
         std::string input;
         std::cin >> input;
         if (input == "0") {
             playGame = false;
+            system("cls");
             break;
+        } else if (input == "1") {
+            system("cls");
+            game.displayLegalMoves();
         } else {
             system("cls");
             playGame = game.makeMove(input);
@@ -32,6 +44,7 @@ bool displayMenu() {
     std::cin >> menuChoice;
     switch (menuChoice) {
         case '1': {
+            system("cls");
             createNewGame();
             break;
         }
