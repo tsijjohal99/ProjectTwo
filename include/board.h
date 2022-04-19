@@ -2,6 +2,7 @@
 #include "chessPiece.h"
 #include <vector>
 #include <list>
+#include <iostream>
 
 class Board {
     private:
@@ -12,6 +13,7 @@ class Board {
         PieceColourType whoseTurn;
         int blackKing[2];
         int whiteKing[2];
+        std::list<std::string> movesMade;
 
     public:
         Board();
@@ -22,12 +24,15 @@ class Board {
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
 
+        void createBoard();
         void displayBoard();
         std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
         bool checkCheck();
         bool checkCheckmate();
         std::list<std::string> legalMoves();
         void displayLegalMoves();
+        void movingPiece(std::string move, int i, int j);
+        void undoMove();
         bool makeMove(std::string move);
         void createPiece(ChessPiece *piece, int a, int b);
         void removePiece(ChessPiece *piece);

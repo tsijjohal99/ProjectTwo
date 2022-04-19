@@ -29,27 +29,10 @@ void King::checkCastle(std::list<std::string> &whereMove, std::vector<std::vecto
     }
 }
 
-std::list<std::string> King::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid) {
-    std::list<std::string> whereMove = Queen::possibleMoves(grid);
+std::list<std::string> King::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second) {
+    std::list<std::string> whereMove = Queen::possibleMoves(grid, second);
     if (symbol == 'K') {
         checkCastle(whereMove, grid);
     }
     return whereMove;
-}
-
-std::string King::constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid) {
-    std::string theMove = "";
-    theMove += symbol;
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);  
-    return theMove;
-}
-
-std::string King::constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid) {
-    std::string theMove = "";
-    theMove += symbol;
-    theMove += 'x';
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);
-    return theMove;
 }

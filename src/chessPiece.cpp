@@ -45,7 +45,7 @@ PieceColourType ChessPiece::getPieceColour() {
     return pieceColour;
 }
 
-std::list<std::string> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid) {
+std::list<std::string> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second) {
     std::list<std::string> empty;
     return empty;
 }
@@ -66,29 +66,12 @@ bool ChessPiece::spaceEnemy(std::vector<std::vector<ChessPiece*>> &grid, int loo
     }
 }
 
-std::string ChessPiece::constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy) {
+std::string ChessPiece::constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     theMove += symbol;
     if (enemy) {
         theMove += 'x';
     }
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);
-    return theMove;
-}
-
-std::string ChessPiece::constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid) {
-    std::string theMove = "";
-    theMove += symbol;
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);
-    return theMove;
-}
-
-std::string ChessPiece::constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid) {
-    std::string theMove = "";
-    theMove += symbol;
-    theMove += 'x';
     theMove += char('a' + look[0]);
     theMove += char('1' + look[1]);
     return theMove;

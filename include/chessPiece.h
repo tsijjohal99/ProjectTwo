@@ -25,10 +25,8 @@ class ChessPiece {
         void setEnPassant(bool en_passant);
         PieceColourType getPieceColour();
 
-        virtual std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid);
+        virtual std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second);
         bool spaceEmpty(std::vector<std::vector<ChessPiece*>> &grid, int look[]);
         bool spaceEnemy(std::vector<std::vector<ChessPiece*>> &grid, int look[]);
-        virtual std::string constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy);
-        virtual std::string constructMoveEmpty(int look[], std::vector<std::vector<ChessPiece*>> &grid);
-        virtual std::string constructMoveEnemy(int look[], std::vector<std::vector<ChessPiece*>> &grid);
+        virtual std::string constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy, bool second);
 };
