@@ -27,7 +27,7 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
         if (spaceEmpty(grid, look)) {
             promotion(look, end, whereMove, constructMove(look, grid, false, second));
             look[1] += neg*1;
-            if (location[1] == start || spaceEmpty(grid, look)) {
+            if (location[1] == start && spaceEmpty(grid, look)) {
                 promotion(look, end, whereMove, constructMove(look, grid, false, second));
             }
             look[1] -= neg*1;
@@ -80,6 +80,7 @@ std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece*>
             }
             if (grid[square[0]][square[1]]->getSymbol() == 'K' && grid[square[0]][square[1]]->getPieceColour() != pieceColour) {
                 theMove += '+';
+                break;
             }
         }
         location[0] = tempLocation[0];

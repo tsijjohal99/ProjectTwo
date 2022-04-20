@@ -26,11 +26,13 @@ class Board {
 
         void createBoard();
         void displayBoard();
+        void displayMovesMade();
         std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
-        bool checkCheck();
+        int *checkCheck();
         bool checkCheckmate();
-        std::list<std::string> legalMoves();
+        std::list<std::string> legalMoves(bool first);
         void displayLegalMoves();
+        void findPiece(std::string move);
         void movingPiece(std::string move, int i, int j);
         void undoMove();
         bool makeMove(std::string move);

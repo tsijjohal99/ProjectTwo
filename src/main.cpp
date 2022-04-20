@@ -16,20 +16,33 @@ void createNewGame() {
         }
         std::cout << "Please enter a legal move." << std::endl;
         std::cout << "Press 1 to list the possible moves. " << std::endl;
+        std::cout << "Press 2 to undo the previous move." << std::endl;
+        std::cout << "Press 3 to display all moves made." << std::endl;
         std::cout << "Press 0 to quit game. " << std::endl;
         std::string input;
         std::cin >> input;
-        if (input == "0") {
-            playGame = false;
-            system("cls");
-            break;
-        } else if (input == "1") {
-            system("cls");
-            game.displayLegalMoves();
-        } else {
-            system("cls");
-            playGame = game.makeMove(input);
-        }
+        try {
+            if (input == "0") {
+                playGame = false;
+                system("cls");
+                break;
+            } else if (input == "1") {
+                system("cls");
+                game.displayLegalMoves();
+            } else if (input == "2") {
+                system("cls");
+                game.undoMove();
+            } else if (input == "3") {
+                system("cls");
+                game.displayMovesMade();
+            } else {
+                system("cls");
+                playGame = game.makeMove(input);
+            }
+        } catch (const std::overflow_error& e) {}
+        catch (const std::runtime_error& e) {}
+        catch (const std::exception& e) {}
+        catch (...) {}
     }
     game.deleteBoard();
 }
