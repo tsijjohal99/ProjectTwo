@@ -1,17 +1,43 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
+# Set project name and version
+project(ProjectTwo VERSION 0.1)
+
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# Enable debug symbols by default
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug 
+    CACHE STRING 
+      "Choose the type of build (Debug or Release)" 
+      FORCE
+    )
+endif()
 
-project(ProjectTwo VERSION 1.0)
+# Generate config.h
+configure_file(config.h.in config.h)
 
-include_directories(include)
+# Find SFML shared libraries
+find_package(SFML 2.5 
+  COMPONENTS 
+    system window graphics network audio REQUIRED
+  )
 
-set(SRC_FILES src/main.cpp src/board.cpp src/chessPiece.cpp src/queen.cpp src/king.cpp src/bishop.cpp src/knight.cpp src/rook.cpp src/pawn.cpp)
+# Compile executable
+add_executable(ProjectTwo src/main2.cpp)
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+# Set include directory search paths
+target_include_directories(ProjectTwo 
+  PRIVATE
+  "${PROJECT_BINARY_DIR}"
+  )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+# Link executable to required SFML libraries
+target_link_libraries(ProjectTwo sfml-graphics)
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+# Install target
+install(TARGETS ProjectTwo DESTINATION bin)
+
