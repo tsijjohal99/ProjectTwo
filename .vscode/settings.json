@@ -51,6 +51,7 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "list": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "ctime": "cpp"
     }
 }

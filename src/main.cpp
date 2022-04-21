@@ -16,8 +16,10 @@ void createNewGame() {
         }
         std::cout << "Please enter a legal move." << std::endl;
         std::cout << "Press 1 to list the possible moves. " << std::endl;
-        std::cout << "Press 2 to undo the previous move." << std::endl;
-        std::cout << "Press 3 to display all moves made." << std::endl;
+        if (!game.getMovesMade().empty()) {
+            std::cout << "Press 2 to undo the previous move." << std::endl;
+            std::cout << "Press 3 to display all moves made." << std::endl;
+        }
         std::cout << "Press 0 to quit game. " << std::endl;
         std::string input;
         std::cin >> input;
@@ -25,14 +27,13 @@ void createNewGame() {
             if (input == "0") {
                 playGame = false;
                 system("cls");
-                break;
             } else if (input == "1") {
                 system("cls");
                 game.displayLegalMoves();
-            } else if (input == "2") {
+            } else if (input == "2" && !game.getMovesMade().empty()) {
                 system("cls");
                 game.undoMove();
-            } else if (input == "3") {
+            } else if (input == "3" && !game.getMovesMade().empty()) {
                 system("cls");
                 game.displayMovesMade();
             } else {

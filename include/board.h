@@ -21,6 +21,7 @@ class Board {
         int getBoardSize();
         std::vector<std::vector<ChessPiece*>> getGrid();
         PieceColourType getWhoseTurn();
+        std::list<std::string> getMovesMade();
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
 

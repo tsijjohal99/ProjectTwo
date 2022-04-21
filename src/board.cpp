@@ -32,6 +32,10 @@ PieceColourType Board::getWhoseTurn() {
     return whoseTurn;
 }
 
+std::list<std::string> Board::getMovesMade() {
+    return movesMade;
+}
+
 void Board::setBoardSize(int size) {
     boardSize = size;
 }
@@ -126,7 +130,7 @@ void Board::displayMovesMade() {
         }
         std::cout << move << " ";
         if (i % 2 == 0) {
-            std::cout << "." << std::endl;
+            std::cout << std::endl;
         }
         i++;
     }
@@ -207,7 +211,7 @@ std::list<std::string> Board::legalMoves(bool first) {
                             movesToRemove.push_back(move);
                             move.pop_back();
                             move += '#';
-                            theLegalMoves.push_back(move);
+                            theMoves.push_back(move);
                         }
                         whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
                         undoMove();

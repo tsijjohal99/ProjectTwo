@@ -31,8 +31,8 @@ std::string Knight::constructMove(int look[], std::vector<std::vector<ChessPiece
     std::string theMove = "";
     bool secondPiece = false;
     theMove += symbol;
-    for (int i = -2; !secondPiece, i < 3; i++) {
-        for (int j = -2; !secondPiece, j < 3; j++) {
+    for (int i = -2; !secondPiece && i < 3; i++) {
+        for (int j = -2; !secondPiece && j < 3; j++) {
             if (pow(i,2) + pow(j,2) == 5 && look[0] + i>= 0 && look[1] + j >= 0
             && look[0] + i < 8 && look[1] + j < 8
             && grid[look[0] + i][look[1] + j]->getPieceColour() == pieceColour
