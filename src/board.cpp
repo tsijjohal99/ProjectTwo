@@ -175,12 +175,13 @@ std::list<std::string> Board::updateCheck(std::list<std::string> theLegalMoves) 
 }
 
 int *Board::checkCheck() {
+    bool checkTemp = isCheck;
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     std::list<std::string> withoutCheck = legalMoves(false);
     isCheck = true;
     std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
-    isCheck = false;
+    isCheck = checkTemp;
     static int checkSize[2];
     checkSize[0] = withCheck.size();
     checkSize[1] = withoutCheck.size();
@@ -423,6 +424,12 @@ bool Board::makeMove(std::string move) {
         }
         movesMade.push_back(move);
         whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+        if (!isCheck) {
+            if (legalMoves(false).empty()){
+                std::cout << "Stalemate!" << std::endl;
+                isCheckmate = true;
+            }
+        }
     } else {
         std::cout << "That move isn't possible. Please try again." << std::endl;
     }
