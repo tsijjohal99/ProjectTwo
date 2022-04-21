@@ -25,7 +25,6 @@ void createNewGame() {
             if (input == "0") {
                 playGame = false;
                 system("cls");
-                break;
             } else if (input == "1") {
                 system("cls");
                 game.displayLegalMoves();

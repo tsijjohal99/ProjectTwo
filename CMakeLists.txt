@@ -17,6 +17,8 @@ if(NOT CMAKE_BUILD_TYPE)
     )
 endif()
 
+include_directories(include)
+
 # Generate config.h
 configure_file(config.h.in config.h)
 
@@ -25,9 +27,13 @@ find_package(SFML 2.5
   COMPONENTS 
     system window graphics network audio REQUIRED
   )
+  
+file(COPY resources DESTINATION ${CMAKE_SOURCE_DIR}/build)
+
+set(SRC_FILES src/main2.cpp src/board.cpp src/chessPiece.cpp src/queen.cpp src/king.cpp src/bishop.cpp src/knight.cpp src/rook.cpp src/pawn.cpp)
 
 # Compile executable
-add_executable(ProjectTwo src/main2.cpp)
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Set include directory search paths
 target_include_directories(ProjectTwo 
@@ -40,4 +46,3 @@ target_link_libraries(ProjectTwo sfml-graphics)
 
 # Install target
 install(TARGETS ProjectTwo DESTINATION bin)
-
