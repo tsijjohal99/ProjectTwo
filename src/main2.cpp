@@ -54,8 +54,17 @@ int main(int argc, char* argv[]) {
     black_tile_texture_map.insert({tile, black_texture});
   }
 
+  ChessPiece *selected_piece{};
+  std::pair<int, int> clicked_pos{};
+  bool piece_is_selected{false};
+
+  std::vector<std::pair<int, int>> posssible_moves_pos{};
+  std::vector<std::string> possible_moves_str{};
+
   while(window.isOpen()) {
     sf::Event Event;
+
+    // bool clicked{false};
 
     while(window.pollEvent(Event)) {
       if (Event.type == sf::Event::Closed)
@@ -63,7 +72,70 @@ int main(int argc, char* argv[]) {
 
       if (Event.type == sf::Event::KeyPressed) {
         if (Event.key.code == sf::Keyboard::Escape)
-          window.close();
+          piece_is_selected = false;
+          posssible_moves_pos.clear();
+      }
+
+      if (Event.type == sf::Event::MouseButtonPressed) {
+        if (Event.mouseButton.button == sf::Mouse::Left) {
+          // std::cout << "mouse x: " << Event.mouseButton.x << std::endl;
+          // std::cout << "mouse y: " << Event.mouseButton.y << std::endl;
+
+          std::cout << "col: " << int(Event.mouseButton.x / tile_size) << std::endl;
+          std::cout << "row: " << game.getBoardSize() - 1 -int(Event.mouseButton.y / tile_size) << std::endl;
+          
+          if (!piece_is_selected) {
+            clicked_pos.first = Event.mouseButton.x / tile_size;
+            clicked_pos.second = game.getBoardSize() - 1 -int(Event.mouseButton.y / tile_size);
+
+            piece_is_selected = true;
+            ChessPiece *selected_piece = game.getGrid()[clicked_pos.first][clicked_pos.second];
+            // std::cout << "piece clicked: " << chess_piece->getSymbol() << std::endl;
+            // const std::string colour = (chess_piece->getPieceColour() == PieceColourType::WHITE) ? "white" : "black";
+            // std::cout << "colour clicked: " << colour << std::endl;
+            
+            std::list<std::string> posssible_moves = selected_piece->possibleMoves(game.getGrid(), false);
+
+            for (const auto& move : posssible_moves) {
+              possible_moves_str.push_back(move);
+              std::pair<int, int> pos{}; 
+
+              if (move != "0-0" && move != "0-0-0") {
+                pos = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
+              } else {
+                if (move == "0-0") {
+                  pos = {6, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
+                } else if (move == "0-0-0") {
+                  pos = {2, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
+                } else {
+                  pos = {int(move[move.size() - 4] - 'a'), int(move[move.size() - 3] - '1')};
+                }
+              }
+
+              std::cout << pos.first << ", " << pos.second << std::endl;
+
+              posssible_moves_pos.push_back(pos);
+            }
+          }
+
+          else {
+            std::pair<int, int> new_clicked_pos{};
+
+            new_clicked_pos.first = Event.mouseButton.x / tile_size;
+            new_clicked_pos.second = game.getBoardSize() - 1 -int(Event.mouseButton.y / tile_size);
+
+            for (int i = 0; i < posssible_moves_pos.size(); i++) {
+              if (new_clicked_pos == posssible_moves_pos[i]) {
+                game.makeMove(possible_moves_str[i]);
+                
+                piece_is_selected = false;
+                posssible_moves_pos.clear();
+                 
+                break;
+              }
+            }
+          }
+        }
       }
     }
 
@@ -96,6 +168,22 @@ int main(int argc, char* argv[]) {
           piece_sprite.setPosition(c * tile_size, r * tile_size);
           window.draw(piece_sprite);
         }
+      }
+    }
+
+    if (piece_is_selected) {
+      sf::RectangleShape rectangle(sf::Vector2f(tile_size, tile_size));
+      rectangle.setFillColor(sf::Color(0, 0, 0, 0));
+      rectangle.setOutlineThickness(-5);
+      rectangle.setOutlineColor(sf::Color(0, 0, 0));
+      rectangle.setPosition(clicked_pos.first * tile_size, (game.getBoardSize() - 1 - clicked_pos.second) * tile_size);
+      window.draw(rectangle);
+
+      for (const auto& pos : posssible_moves_pos) {
+        sf::RectangleShape rectangle2(sf::Vector2f(tile_size, tile_size));
+        rectangle2.setFillColor(sf::Color(255, 0, 0, 100));
+        rectangle2.setPosition(pos.first * tile_size, (game.getBoardSize() - 1 - pos.second) * tile_size);
+        window.draw(rectangle2);
       }
     }
 

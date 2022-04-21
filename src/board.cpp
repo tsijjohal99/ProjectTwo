@@ -24,7 +24,7 @@ int Board::getBoardSize() {
     return boardSize;
 }
 
-std::vector<std::vector<ChessPiece*>> Board::getGrid() {
+std::vector<std::vector<ChessPiece*>>& Board::getGrid() {
     return grid;
 }
 

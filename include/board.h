@@ -19,7 +19,7 @@ class Board {
         Board();
 
         int getBoardSize();
-        std::vector<std::vector<ChessPiece*>> getGrid();
+        std::vector<std::vector<ChessPiece*>>& getGrid();
         PieceColourType getWhoseTurn();
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
