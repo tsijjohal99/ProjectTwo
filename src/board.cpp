@@ -380,6 +380,9 @@ void Board::undoMove() {
         whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
     }
     whoseTurn = (colourTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+    if (isCheck) {
+        isCheck = false;
+    }
 }
 
 bool Board::makeMove(std::string move) {
