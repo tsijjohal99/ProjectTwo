@@ -24,12 +24,13 @@ class Board {
         std::list<std::string> getMovesMade();
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
+        void setWhoseTurn(PieceColourType colour);
 
         void createBoard();
         void displayBoard();
         void displayMovesMade();
         std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
-        int *checkCheck();
+        bool checkCheck();
         bool checkCheckmate();
         std::list<std::string> legalMoves(bool first);
         void displayLegalMoves();

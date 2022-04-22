@@ -44,6 +44,10 @@ void Board::setGrid(std::vector<std::vector<ChessPiece*>> theGrid) {
     grid == theGrid;
 }
 
+void Board::setWhoseTurn(PieceColourType colour) {
+    whoseTurn = colour;
+}
+
 void Board::createBoard() {
     for (int i = 0; i < boardSize; i++) {
         for (int j = 0; j < boardSize; j++) {
@@ -178,7 +182,7 @@ std::list<std::string> Board::updateCheck(std::list<std::string> theLegalMoves) 
     return theLegalMoves;
 }
 
-int *Board::checkCheck() {
+bool Board::checkCheck() {
     bool checkTemp = isCheck;
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     std::list<std::string> withoutCheck = legalMoves(false);
@@ -186,14 +190,18 @@ int *Board::checkCheck() {
     std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     isCheck = checkTemp;
-    static int checkSize[2];
-    checkSize[0] = withCheck.size();
-    checkSize[1] = withoutCheck.size();
-    return checkSize;
+    return (withCheck.size() != withoutCheck.size());
 }
 
 bool Board::checkCheckmate() {
-    return (checkCheck()[0] == 0);
+    bool checkTemp = isCheck;
+    whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
+    std::list<std::string> withoutCheck = legalMoves(false);
+    isCheck = true;
+    std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
+    whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
+    isCheck = checkTemp;
+    return (withCheck.size() == 0);
 }
 
 std::list<std::string> Board::legalMoves(bool first) {
