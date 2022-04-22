@@ -27,6 +27,7 @@ class Board {
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
         void setWhoseTurn(PieceColourType colour);
+        void setIsCheck(bool check);
 
         void addMove(std::string move);
         void createBoard();

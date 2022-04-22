@@ -88,6 +88,8 @@ int main(int argc, char* argv[]) {
 					//std::cout << "row: " << game.getBoardSize() - 1 -int(Event.mouseButton.y / tile_size) << std::endl;
 					
 					if (!piece_is_selected) {
+						bool check = game.getIsCheck();
+
 						clicked_pos.first = Event.mouseButton.x / tile_size;
 						clicked_pos.second = game.getBoardSize() - 1 - int(Event.mouseButton.y / tile_size);
 
@@ -154,6 +156,8 @@ int main(int argc, char* argv[]) {
 								posssible_moves_pos.push_back(pos);
 							}
 						}
+						game.setIsCheck(check);
+
 					} else {
 						std::pair<int, int> new_clicked_pos{};
 
