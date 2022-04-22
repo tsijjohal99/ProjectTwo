@@ -124,7 +124,6 @@ int main(int argc, char* argv[]) {
 							}
 
 							for (const auto& move : posssible_moves_with_check) {
-								std::cout << move << std::endl;
 								std::string updatedMove = move;
 
 								possible_moves_str.push_back(updatedMove);
@@ -163,8 +162,6 @@ int main(int argc, char* argv[]) {
 
 						for (int i = 0; i < posssible_moves_pos.size(); i++) {
 							if (new_clicked_pos == posssible_moves_pos[i]) {
-								std::cout << possible_moves_str[i] << std::endl;
-								std::cout << possible_moves_str[i] << std::endl;
 								playGame = game.makeMove(possible_moves_str[i]);
 								
 								break;
@@ -221,10 +218,19 @@ int main(int argc, char* argv[]) {
 
 			for (const auto& pos : posssible_moves_pos) {
 				sf::RectangleShape rectangle2(sf::Vector2f(tile_size, tile_size));
-				rectangle2.setFillColor(sf::Color(255, 0, 0, 100));
+				rectangle2.setFillColor(sf::Color(0, 0, 255, 100));
 				rectangle2.setPosition(pos.first * tile_size, (game.getBoardSize() - 1 - pos.second) * tile_size);
 				window.draw(rectangle2);
 			}
+		}
+
+		if (game.getIsCheck()) {
+			sf::RectangleShape rectangle2(sf::Vector2f(tile_size, tile_size));
+			rectangle2.setFillColor(sf::Color(255, 0, 0, 100));
+			int king[] = {game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing()[0] : game.getBlackKing()[0],
+				game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing()[1] : game.getBlackKing()[1]};
+			rectangle2.setPosition(king[0] * tile_size, (game.getBoardSize() - 1 - king[1]) * tile_size);
+			window.draw(rectangle2);
 		}
 
 		window.display();

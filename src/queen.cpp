@@ -70,13 +70,13 @@ std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece*
     std::string theMove = "";
     bool foundSecond = false;
     theMove += symbol;
-    for (int i = -1; i < 2; i++) {
-        for (int j = -1; j < 2; j++) {
+    for (int i = -1; i < 2 && !foundSecond; i++) {
+        for (int j = -1; j < 2 && !foundSecond; j++) {
             int direction[] = {i,j};
-            if (!foundSecond) { //XOR
-                if ((i == -j || i == j) && i != 0 && symbol != 'R') {
+            if ((i != 0 || j != 0)) { //XOR
+                if ((i == -j || i == j) && symbol != 'R') {
                     foundSecond = constructMoveSlide(theMove, look, grid, direction);
-                } else if ((i == 0 || j == 0) && !(i == 0 && j == 0) && symbol != 'B') {
+                } else if (i != j & symbol != 'B') {
                     foundSecond = constructMoveSlide(theMove, look, grid, direction);
                 }
             }

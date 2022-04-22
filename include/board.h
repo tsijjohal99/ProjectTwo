@@ -22,6 +22,8 @@ class Board {
         std::vector<std::vector<ChessPiece*>>& getGrid();
         PieceColourType getWhoseTurn();
         bool getIsCheck();
+        int *getBlackKing();
+        int *getWhiteKing();
         void setBoardSize(int size);
         void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
         void setWhoseTurn(PieceColourType colour);

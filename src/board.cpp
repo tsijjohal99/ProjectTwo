@@ -36,6 +36,14 @@ bool Board::getIsCheck() {
     return isCheck;
 }
 
+int *Board::getBlackKing() {
+    return blackKing;
+}
+
+int *Board::getWhiteKing() {
+    return whiteKing;
+}
+
 void Board::setBoardSize(int size) {
     boardSize = size;
 }
@@ -388,6 +396,9 @@ void Board::undoMove() {
         whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
     }
     whoseTurn = (colourTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+    if (isCheck) {
+        isCheck = false;
+    }
 }
 
 bool Board::makeMove(std::string move) {
