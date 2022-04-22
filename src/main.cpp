@@ -19,6 +19,7 @@ void createNewGame() {
         if (!game.getMovesMade().empty()) {
             std::cout << "Press 2 to undo the previous move." << std::endl;
             std::cout << "Press 3 to display all moves made." << std::endl;
+            std::cout << "Press 4 to resign" << std::endl;
         }
         std::cout << "Press 0 to quit game. " << std::endl;
         std::string input;
@@ -36,6 +37,11 @@ void createNewGame() {
             } else if (input == "3" && !game.getMovesMade().empty()) {
                 system("cls");
                 game.displayMovesMade();
+            } else if (input == "4" && !game.getMovesMade().empty()) {
+                system("cls");
+                playGame = false;
+                std::string colour = (game.getWhoseTurn() == PieceColourType::WHITE) ? "White" : "Black";
+                std::cout << colour << " resigns." << std::endl;
             } else {
                 system("cls");
                 playGame = game.makeMove(input);
