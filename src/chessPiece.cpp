@@ -21,6 +21,10 @@ int *ChessPiece::getLocation() {
     return location;
 }
 
+void ChessPiece::setPieceColour(PieceColourType colour) {
+    pieceColour = colour;
+}
+
 char ChessPiece::getSymbol() {
     return symbol;
 }

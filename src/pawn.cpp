@@ -1,4 +1,3 @@
-
 #include "pawn.h"
 #include "pieceColourType.h"
 #include "board.h"
@@ -86,9 +85,11 @@ std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece*>
         } else {
             Board temp;
             temp.setGrid(grid);
-            temp.setWhoseTurn(grid[tempLocation[0]][tempLocation[1]]->getPieceColour());
+            temp.setWhoseTurn(pieceColour);
             temp.movingPiece(theMove, tempLocation[0], tempLocation[1]);
             std::vector<std::vector<ChessPiece*>> tempGrid = temp.getGrid();
+            tempGrid[location[0]][location[1]]->setPieceColour(pieceColour);
+            PieceColourType colour = tempGrid[location[0]][location[1]]->getPieceColour();
             checkForCheck = tempGrid[location[0]][location[1]]->possibleMoves(tempGrid, true);
             temp.deleteBoard();
         }
