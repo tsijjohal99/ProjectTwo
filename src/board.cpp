@@ -393,30 +393,38 @@ bool Board::makeMove(std::string move) {
     std::list<std::string>::iterator it = std::find(theLegalMoves.begin(), theLegalMoves.end(), move);
     if (it != theLegalMoves.end()) {
         bool moveCompleted = false;
+
         if (hash) {
             move.pop_back();
             move += '+';
         }
+
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 if (grid[i][j]->getPieceColour() == whoseTurn && !moveCompleted) {
+                    
                     std::list<std::string> theMoves = grid[i][j]->possibleMoves(grid, false);
                     std::list<std::string>::iterator it2;
                     it2 = std::find(theMoves.begin(), theMoves.end(), move);
+
                     if (it2 != theMoves.end()) {
                         isCheck = false;
+
                         if (hash) {
                             isCheckmate = true;
                             std::cout << "Checkmate!" << std::endl;
                         }
+
                         if (!grid[i][j]->getHasMoved()) {
                             grid[i][j]->setHasMoved(true);
                         }
+
                         movingPiece(move, i, j);
                         if (plus) {
                             isCheck = true;
                             std::cout << "Check!" << std::endl;
                         }
+
                         moveCompleted = true;
                     }
                 }
@@ -424,6 +432,7 @@ bool Board::makeMove(std::string move) {
         }
         movesMade.push_back(move);
         whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+        
         if (!isCheck) {
             if (legalMoves(false).empty()){
                 std::cout << "Stalemate!" << std::endl;
