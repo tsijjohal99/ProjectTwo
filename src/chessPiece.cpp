@@ -17,6 +17,10 @@ void ChessPiece::setLocation(int a, int b) {
     location[0] = a;
 }
 
+void ChessPiece::setPieceColour(PieceColourType colour) {
+    pieceColour = colour;
+}
+
 int *ChessPiece::getLocation() {
     return location;
 }

@@ -17,6 +17,7 @@ class ChessPiece {
         ChessPiece(int square[2], PieceColourType colour);
 
         void setLocation(int a, int b);
+        void setPieceColour(PieceColourType colour);
         int *getLocation();
         char getSymbol();
         bool getHasMoved();
