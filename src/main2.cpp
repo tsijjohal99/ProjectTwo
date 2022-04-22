@@ -11,8 +11,6 @@
 
 #define TILE_MAP_SIZE 8
 
-const int tile_size{64};
-
 void resize_sprite(sf::Sprite& piece_sprite, int width, int height) {
   	auto size = piece_sprite.getTexture()->getSize();
   	piece_sprite.setScale((float)width/size.x, (float)height/size.y);
@@ -20,6 +18,7 @@ void resize_sprite(sf::Sprite& piece_sprite, int width, int height) {
 
 int main(int argc, char* argv[]) {
 	Board game;
+	bool playGame = true;
 	const int tile_size = 64;
 	const int window_size = game.getBoardSize() * tile_size;
 
@@ -61,9 +60,8 @@ int main(int argc, char* argv[]) {
 	std::vector<std::pair<int, int>> posssible_moves_pos{};
 	std::vector<std::string> possible_moves_str{};
 
-	while(window.isOpen()) {
+	while(window.isOpen() & playGame) {
 		sf::Event Event;
-
 		// bool clicked{false};
 
 		while(window.pollEvent(Event)) {
@@ -91,41 +89,72 @@ int main(int argc, char* argv[]) {
 					
 					if (!piece_is_selected) {
 						clicked_pos.first = Event.mouseButton.x / tile_size;
-						clicked_pos.second = game.getBoardSize() - 1 -int(Event.mouseButton.y / tile_size);
+						clicked_pos.second = game.getBoardSize() - 1 - int(Event.mouseButton.y / tile_size);
 
 						piece_is_selected = true;
 						ChessPiece *selected_piece = game.getGrid()[clicked_pos.first][clicked_pos.second];
 						// std::cout << "piece clicked: " << chess_piece->getSymbol() << std::endl;
 						// const std::string colour = (chess_piece->getPieceColour() == PieceColourType::WHITE) ? "white" : "black";
 						// std::cout << "colour clicked: " << colour << std::endl;
-						
-						std::list<std::string> posssible_moves = selected_piece->possibleMoves(game.getGrid(), false);
 
 						if (selected_piece->getPieceColour() == game.getWhoseTurn()) {
+
+							std::list<std::string> posssible_moves = selected_piece->possibleMoves(game.getGrid(), false);
+							std::list<std::string> posssible_moves_with_check;
+
 							for (const auto& move : posssible_moves) {
+								std::string updatedMove = move;
+
+								if (updatedMove[updatedMove.size()-1] == '+') {
+									game.movingPiece(updatedMove, clicked_pos.first, clicked_pos.second);
+									game.addMove(updatedMove);
+									if (game.checkCheckmate()) {
+										updatedMove.pop_back();
+										updatedMove += '#';
+									}
+									game.setWhoseTurn((game.getWhoseTurn() == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE);
+									game.undoMove();
+								}
+
+								posssible_moves_with_check.push_back(updatedMove);
+							}
+
+							if (game.getIsCheck()) {
+								posssible_moves_with_check = game.updateCheck(posssible_moves_with_check);
+							}
+
+							for (const auto& move : posssible_moves_with_check) {
 								std::cout << move << std::endl;
+								std::string updatedMove = move;
 
-								possible_moves_str.push_back(move);
+								possible_moves_str.push_back(updatedMove);
 								std::pair<int, int> pos{}; 
-
-								if (move != "0-0" && move != "0-0-0") {
-									pos = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
-								} else {
-									if (move == "0-0") {
-										pos = {6, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
-									} else if (move == "0-0-0") {
-										pos = {2, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
-									} else {
-										pos = {int(move[move.size() - 4] - 'a'), int(move[move.size() - 3] - '1')};
+								
+								switch(updatedMove[updatedMove.size() - 1]) {
+									case '+': {
+										updatedMove.pop_back();
+										break;
+									} case '#': {
+										updatedMove.pop_back();
+										break;
 									}
 								}
 
-								std::cout << pos.first << ", " << pos.second << std::endl;
+								if (updatedMove == "0-0") {
+									pos = {6, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
+								} else if (updatedMove == "0-0-0") {
+									pos = {2, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
+								} else if (char(updatedMove[updatedMove.size() - 2]) == '=') {
+									pos = {int(updatedMove[updatedMove.size() - 4] - 'a'), int(updatedMove[updatedMove.size() - 3] - '1')};
+								} else {
+									pos = {int(updatedMove[updatedMove.size() - 2] - 'a'), int(updatedMove[updatedMove.size() - 1] - '1')};
+								}
+
+								//std::cout << pos.first << ", " << pos.second << std::endl;
 
 								posssible_moves_pos.push_back(pos);
 							}
 						}
-
 					} else {
 						std::pair<int, int> new_clicked_pos{};
 
@@ -134,15 +163,19 @@ int main(int argc, char* argv[]) {
 
 						for (int i = 0; i < posssible_moves_pos.size(); i++) {
 							if (new_clicked_pos == posssible_moves_pos[i]) {
-								game.makeMove(possible_moves_str[i]);
+								std::cout << possible_moves_str[i] << std::endl;
+								std::cout << possible_moves_str[i] << std::endl;
+								playGame = game.makeMove(possible_moves_str[i]);
 								
 								break;
 							}
 						}
-
 						piece_is_selected = false;
 						posssible_moves_pos.clear();
+						possible_moves_str.clear();
+
 					}
+
 				}
 			}
 		}

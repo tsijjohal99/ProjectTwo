@@ -32,12 +32,24 @@ PieceColourType Board::getWhoseTurn() {
     return whoseTurn;
 }
 
+bool Board::getIsCheck() {
+    return isCheck;
+}
+
 void Board::setBoardSize(int size) {
     boardSize = size;
 }
 
 void Board::setGrid(std::vector<std::vector<ChessPiece*>> theGrid) {
     grid == theGrid;
+}
+
+void Board::setWhoseTurn(PieceColourType colour) {
+    whoseTurn = colour;
+}
+
+void Board::addMove(std::string move) {
+    movesMade.push_back(move);
 }
 
 void Board::createBoard() {
