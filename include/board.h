@@ -33,7 +33,7 @@ class Board {
         void displayBoard();
         void displayMovesMade();
         std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
-        int *checkCheck();
+        bool checkCheck();
         bool checkCheckmate();
         std::list<std::string> legalMoves(bool first);
         void displayLegalMoves();

@@ -194,7 +194,7 @@ std::list<std::string> Board::updateCheck(std::list<std::string> theLegalMoves) 
     return theLegalMoves;
 }
 
-int *Board::checkCheck() {
+bool Board::checkCheck() {
     bool checkTemp = isCheck;
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     std::list<std::string> withoutCheck = legalMoves(false);
@@ -202,14 +202,18 @@ int *Board::checkCheck() {
     std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     isCheck = checkTemp;
-    static int checkSize[2];
-    checkSize[0] = withCheck.size();
-    checkSize[1] = withoutCheck.size();
-    return checkSize;
+    return (withCheck.size() < withoutCheck.size());
 }
 
 bool Board::checkCheckmate() {
-    return (checkCheck()[0] == 0);
+    bool checkTemp = isCheck;
+    whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
+    std::list<std::string> withoutCheck = legalMoves(false);
+    isCheck = true;
+    std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
+    whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
+    isCheck = checkTemp;
+    return (withCheck.size() == 0);
 }
 
 std::list<std::string> Board::legalMoves(bool first) {
@@ -371,6 +375,8 @@ void Board::movingPiece(std::string move, int i, int j) {
             }
             int square2[] = {i,j};
             createPiece(new ChessPiece(square2 , PieceColourType::UNASSIGNED), i, j);
+
+            isCheck = checkCheck();
         } else {
             int look[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
             if (grid[i][j]->spaceEmpty(grid, look)) {
