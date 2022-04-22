@@ -39,7 +39,7 @@ std::list<std::string> Queen::possibleMoves(std::vector<std::vector<ChessPiece*>
                 if ((i == -j || i == j) && symbol != 'R') {
                     std::list<std::string> moves = slide(grid, direction, second);
                     whereMove.insert(whereMove.end(), moves.begin(), moves.end());
-                } else if (i != j & symbol != 'B') {
+                } else if (i != j && symbol != 'B') {
                     std::list<std::string> moves = slide(grid, direction, second);
                     whereMove.insert(whereMove.end(), moves.begin(), moves.end());
                 }
@@ -70,13 +70,13 @@ std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece*
     std::string theMove = "";
     bool foundSecond = false;
     theMove += symbol;
-    for (int i = -1; i < 2 && !foundSecond; i++) {
-        for (int j = -1; j < 2 && !foundSecond; j++) {
+    for (int i = -1; !foundSecond && i < 2; i++) {
+        for (int j = -1; !foundSecond && j < 2; j++) {
             int direction[] = {i,j};
-            if ((i != 0 || j != 0)) { //XOR
+            if ((i != 0 || j != 0) && !foundSecond) { //XOR
                 if ((i == -j || i == j) && symbol != 'R') {
                     foundSecond = constructMoveSlide(theMove, look, grid, direction);
-                } else if (i != j & symbol != 'B') {
+                } else if (i != j && symbol != 'B') {
                     foundSecond = constructMoveSlide(theMove, look, grid, direction);
                 }
             }
@@ -93,8 +93,8 @@ std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece*
         location[1] = look[1];
         std::list<std::string> checkForCheck = possibleMoves(grid, true);
         for (std::string move : checkForCheck) {
-            int square[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
             if (move != "0-0" && move != "0-0-0") {
+                int square[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
                 if (grid[square[0]][square[1]]->getSymbol() == 'K' && grid[square[0]][square[1]]->getPieceColour() != pieceColour) {
                     theMove += '+';
                 }

@@ -9,5 +9,4 @@ class Pawn : public ChessPiece {
 
         std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second);
         std::string constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy, bool second);
-        void promotion(int look[], int end, std::list<std::string> &whereMove, std::string move);
 };
