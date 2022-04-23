@@ -21,6 +21,18 @@ void ChessPiece::setPieceColour(PieceColourType colour) {
     pieceColour = colour;
 }
 
+void ChessPiece::setEnPassant(bool en_passant) {
+    enPassant = en_passant;
+}
+
+void ChessPiece::increaseMoveCounter() {
+    moveCounter++;
+}
+
+void ChessPiece::decreaseMoveCounter() {
+    moveCounter--;
+}
+
 int *ChessPiece::getLocation() {
     return location;
 }
@@ -29,24 +41,16 @@ char ChessPiece::getSymbol() {
     return symbol;
 }
 
-bool ChessPiece::getHasMoved() {
-    return hasMoved;
-}
-
 bool ChessPiece::getEnPassant() {
     return enPassant;
 }
 
-void ChessPiece::setHasMoved(bool has_moved) {
-    hasMoved = has_moved;
-}
-
-void ChessPiece::setEnPassant(bool en_passant) {
-    enPassant = en_passant;
-}
-
 PieceColourType ChessPiece::getPieceColour() {
     return pieceColour;
+}
+
+int ChessPiece::getMoveCounter() {
+    return moveCounter;
 }
 
 std::list<std::string> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second) {

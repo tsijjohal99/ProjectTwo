@@ -9,10 +9,10 @@ King::King(int square[2], PieceColourType colour) : Queen(square, colour) {
 }
 
 void King::checkCastle(std::list<std::string> &whereMove, std::vector<std::vector<ChessPiece*>> &grid) {
-    if (!hasMoved) {
+    if (moveCounter == 0) {
         int y = (getPieceColour() == PieceColourType::WHITE) ? 0 : 7;
         if (grid[0][y]->getSymbol() == 'R') {
-            if (!grid[0][y]->getHasMoved() 
+            if (grid[0][y]->getMoveCounter() == 0
             && grid[1][y]->getPieceColour() == PieceColourType::UNASSIGNED
             && grid[2][y]->getPieceColour() == PieceColourType::UNASSIGNED
             && grid[3][y]->getPieceColour() == PieceColourType::UNASSIGNED) { 
@@ -20,7 +20,7 @@ void King::checkCastle(std::list<std::string> &whereMove, std::vector<std::vecto
             }
         }
         if (grid[7][y]->getSymbol() == 'R') {
-            if (!grid[7][y]->getHasMoved() 
+            if (grid[7][y]->getMoveCounter() == 0
             && grid[6][y]->getPieceColour() == PieceColourType::UNASSIGNED
             && grid[5][y]->getPieceColour() == PieceColourType::UNASSIGNED) {
                 whereMove.push_back("0-0");
@@ -34,5 +34,6 @@ std::list<std::string> King::possibleMoves(std::vector<std::vector<ChessPiece*>>
     if (symbol == 'K') {
         checkCastle(whereMove, grid);
     }
+
     return whereMove;
 }

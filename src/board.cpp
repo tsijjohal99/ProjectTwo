@@ -293,26 +293,7 @@ void Board::movingPiece(std::string move, int i, int j) {
             break;
         }
     }
-    if (move[0] == grid[i][j]->getSymbol()) {
-        int look[] = {int(move[move.size()-2] - 'a'), int(move[move.size()-1] - '1')};
-        if (grid[i][j]->getSymbol() == 'K') {
-            switch (grid[i][j]->getPieceColour()) {
-                case PieceColourType::WHITE: {
-                    whiteKing[0] = look[0];
-                    whiteKing[1] = look[1];
-                    break;
-                }
-                case PieceColourType::BLACK: {
-                    blackKing[0] = look[0];
-                    blackKing[1] = look[1];
-                    break;
-                }
-            }
-        }
-        createPiece(grid[i][j], int(move[move.size()-2] - 'a'), int(move[move.size()-1] - '1'));
-        int square[] = {i,j};
-        createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), i, j);
-    } else if (move == "0-0-0") {
+    if (move == "0-0-0") {
         if (grid[i][j]->getSymbol() == 'K') {
             switch (grid[i][j]->getPieceColour()) {
                 case PieceColourType::WHITE: {
@@ -326,11 +307,14 @@ void Board::movingPiece(std::string move, int i, int j) {
             }
         }
         createPiece(grid[4][j], 2, j);
+        grid[2][j]->increaseMoveCounter();
         int square[2] = {4,j};
         createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 4, j);
         createPiece(grid[0][j], 3, j);
+        grid[3][j]->increaseMoveCounter();
         square[0] = 0;
         createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 0, j);
+
     } else if (move == "0-0") {
         if (grid[i][j]->getSymbol() == 'K') {
             switch (grid[i][j]->getPieceColour()) {
@@ -345,55 +329,94 @@ void Board::movingPiece(std::string move, int i, int j) {
             }
         }
         createPiece(grid[4][j], 6, j);
+        grid[6][j]->increaseMoveCounter();
         int square[2] = {4,j};
         createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 4, j);
         createPiece(grid[7][j], 5, j);
+        grid[5][j]->increaseMoveCounter();
         square[0] = 7;
         createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 7, j);
-    } else {
-        if (move.size() == 2) { //normal pawn movement
-            if (!grid[i][j]->getHasMoved() && (int(move[1] - '1') == 4 || int(move[1] - '1') == 5)) {
-                grid[i][j]->setEnPassant(true);
-            } else {
-                grid[i][j]->setEnPassant(false);
+    } else if (move[move.size() - 2] == '=') {
+        int look[] = {int(move[move.size() - 4] - 'a'), int(move[move.size() - 3] - '1')};
+        switch (move[move.size() - 1]) {
+            case 'Q': {
+                createPiece(new Queen(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+                break;
+            } case 'R': {
+                createPiece(new Rook(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+                break;
+            } case 'B': {
+                createPiece(new Bishop(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+                break;
+            } case 'N': {
+                createPiece(new Knight(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+                break;
             }
-            createPiece(grid[i][j], int(move[0] - 'a'), int(move[1] - '1'));
-            int square[] = {i,j};
-            createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), i, j);
-        } else if (move[move.size() - 2] == '=') {
-            int square[] = {int(move[move.size() - 4] - 'a'), int(move[move.size() - 3] - '1')};
-            switch (move[move.size() - 1]) {
-                case 'Q': {
-                    createPiece(new Queen(square , grid[i][j]->getPieceColour()), square[0], square[1]);
+        }
+        grid[look[0]][look[1]]->increaseMoveCounter();
+        int originalLocation[] = {i,j};
+        createPiece(new ChessPiece(originalLocation , PieceColourType::UNASSIGNED), i, j);
+    } else {
+        int look[] = {int(move[move.size()-2] - 'a'), int(move[move.size()-1] - '1')};
+        if (grid[i][j]->getSymbol() == 'K') {
+            switch (grid[i][j]->getPieceColour()) {
+                case PieceColourType::WHITE: {
+                    whiteKing[0] = look[0];
+                    whiteKing[1] = look[1];
                     break;
-                } case 'R': {
-                    createPiece(new Rook(square , grid[i][j]->getPieceColour()), square[0], square[1]);
-                    break;
-                } case 'B': {
-                    createPiece(new Bishop(square , grid[i][j]->getPieceColour()), square[0], square[1]);
-                    break;
-                } case 'N': {
-                    createPiece(new Knight(square , grid[i][j]->getPieceColour()), square[0], square[1]);
+                }
+                case PieceColourType::BLACK: {
+                    blackKing[0] = look[0];
+                    blackKing[1] = look[1];
                     break;
                 }
             }
-            int square2[] = {i,j};
-            createPiece(new ChessPiece(square2 , PieceColourType::UNASSIGNED), i, j);
-        } else {
-            int look[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
-            if (grid[i][j]->spaceEmpty(grid, look)) {
-                look[1] -= (grid[i][j]->getPieceColour() == PieceColourType::WHITE) ? 1 : -1;
-                createPiece(new ChessPiece(look, PieceColourType::UNASSIGNED), look[0], look[1]);
-                look[1] += (grid[i][j]->getPieceColour() == PieceColourType::WHITE) ? 1 : -1;
+        } else if (grid[i][j]->getSymbol() == 'P') {
+            if (move.size() == 2) { //normal pawn movement
+                if (grid[i][j]->getMoveCounter() == 0 && (look[1] == 3 || look[1] == 4)) {
+                    grid[i][j]->setEnPassant(true);
+                }
+            } else {
+                if (grid[i][j]->spaceEmpty(grid, look)) {
+                    look[1] -= (grid[i][j]->getPieceColour() == PieceColourType::WHITE) ? 1 : -1;
+                    createPiece(new ChessPiece(look, PieceColourType::UNASSIGNED), look[0], look[1]);
+                    look[1] += (grid[i][j]->getPieceColour() == PieceColourType::WHITE) ? 1 : -1;
+                }
             }
-            createPiece(grid[i][j], look[0], look[1]);
-            int square[] = {i,j};
-            createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), i ,j);
         }
+        
+        createPiece(grid[i][j], look[0], look[1]);
+        grid[look[0]][look[1]]->increaseMoveCounter();
+        int square[] = {i,j};
+        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), i ,j);
     }
 }
 
 void Board::undoMove() {
+    std::string moveToRemove = movesMade.back();
+
+    switch(moveToRemove[moveToRemove.size() - 1]) {
+        case '+': {
+            moveToRemove.pop_back();
+            break;
+        } case '#': {
+            moveToRemove.pop_back();
+            break;
+        }
+    }
+
+    if (moveToRemove == "0-0") {
+        grid[5][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+        grid[6][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+    } else if (movesMade.back() == "0-0-0") {
+        grid[2][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+        grid[3][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+    } else if (char(moveToRemove[moveToRemove.size() - 2]) == '=') {
+        grid[int(moveToRemove[moveToRemove.size() - 4] - 'a')][int(moveToRemove[moveToRemove.size() - 3] - '1')]->decreaseMoveCounter();
+    } else {
+        grid[int(moveToRemove[moveToRemove.size() - 2] - 'a')][int(moveToRemove[moveToRemove.size() - 1] - '1')]->decreaseMoveCounter();
+    }
+
     movesMade.pop_back();
     deleteBoard();
     createBoard();
@@ -445,31 +468,23 @@ bool Board::makeMove(std::string move) {
 
                     movingPiece(move, i, j);
 
-                    if (!grid[i][j]->getHasMoved()) {
-                        /*if (move == "0-0") {
-                            pos = {6, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
-                        } else if (updatedMove == "0-0-0") {
-                            pos = {2, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
-                        } else if (char(updatedMove[updatedMove.size() - 2]) == '=') {
-                            pos = {int(updatedMove[updatedMove.size() - 4] - 'a'), int(updatedMove[updatedMove.size() - 3] - '1')};
-                        } else {
-                            pos = {int(updatedMove[updatedMove.size() - 2] - 'a'), int(updatedMove[updatedMove.size() - 1] - '1')};
-                        }*/
-                        grid[i][j]->setHasMoved(true);
-                    }
-
                     if (plus) {
                         isCheck = true;
                         std::cout << "Check!" << std::endl;
                     }
 
                     moveCompleted = true;
+
+                    if (movesMade.back().size() == 2) {
+                        grid[int(movesMade.back()[0] - 'a')][int(movesMade.back()[1] - '1')]->setEnPassant(false);
+                    }
                 }
             }
         }
     }
     movesMade.push_back(move);
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+
     
     if (!isCheck) {
         if (legalMoves(false).empty()){

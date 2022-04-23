@@ -32,24 +32,15 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
             }
             look[1] -= neg*1;
         }
-        /*for (int i = -1; i < 2; i +=2) {
-            if (location[0] != (i == -1) ? 0 : 7) {
-                look[0] = look[0] + i*1;
-                if (spaceEnemy(grid, look)) {
-                    whereMove.push_back(constructMove(look, grid, true, second));
-                }
-                if (spaceEnemy(grid, look) && grid[look[0]][look[1] - neg*1]->getEnPassant()) {
-                    whereMove.push_back(constructMove(lookLeft, grid, true, second));
-                }
-           }
-        }*/
         if (location[0] != 0) {
             lookLeft[0] = look[0] - 1;
             lookLeft[1] = look[1];
             if (spaceEnemy(grid, lookLeft)) {
                 whereMove.push_back(constructMove(lookLeft, grid, true, second));
             }
-            if (spaceEnemy(grid, lookLeft) && grid[lookLeft[0]][lookLeft[1] - neg*1]->getEnPassant()) {
+            lookLeft[1] = lookLeft[1] - neg*1;
+            if (spaceEnemy(grid, lookLeft) && grid[lookLeft[0]][lookLeft[1]]->getEnPassant()) {
+                lookLeft[1] = lookLeft[1] + neg*1;
                 whereMove.push_back(constructMove(lookLeft, grid, true, second));
             }
         }
@@ -59,7 +50,9 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
             if (spaceEnemy(grid, lookRight)) {
                 whereMove.push_back(constructMove(lookRight, grid, true, second));
             }
-            if (spaceEnemy(grid, lookRight) && grid[lookRight[0]][lookRight[1] - neg*1]->getEnPassant()) {
+            lookRight[1] = lookRight[1] - neg*1;
+            if (spaceEnemy(grid, lookRight) && grid[lookRight[0]][lookRight[1]]->getEnPassant()) {
+                lookRight[1] = lookRight[1] + neg*1;
                 whereMove.push_back(constructMove(lookRight, grid, true, second));
             }
         }

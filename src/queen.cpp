@@ -17,7 +17,26 @@ std::list<std::string> Queen::slide(std::vector<std::vector<ChessPiece*>> &grid,
         look[0] = location[0] + i*direction[0];
         look[1] = location[1] + i*direction[1];
         if (ChessPiece::spaceEmpty(grid, look)) {
-            whereMove.push_back(constructMove(look, grid, false, second));
+            bool kissingKings = false;
+            if (symbol == 'K' && !second) {
+                int tempLocation[] = {location[0], location[1]};
+                location[0] = look[0];
+                location[1] = look[1];
+                std::list<std::string> checkForKissingKings = possibleMoves(grid, true);
+                for (std::string move : checkForKissingKings) {
+                    if (move != "0-0" && move != "0-0-0") {
+                        int square[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
+                        if (grid[square[0]][square[1]]->getSymbol() == 'K' && grid[square[0]][square[1]]->getPieceColour() != pieceColour) {
+                            kissingKings = true;
+                        }
+                    }
+                }
+                location[0] = tempLocation[0];
+                location[1] = tempLocation[1];
+            }
+            if (!kissingKings) {
+                whereMove.push_back(constructMove(look, grid, false, second));
+            }
         } else if (ChessPiece::spaceEnemy(grid, look)) { 
             whereMove.push_back(constructMove(look, grid, true, second));
             break;
@@ -87,7 +106,7 @@ std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece*
     }
     theMove += char('a' + look[0]);
     theMove += char('1' + look[1]);
-    if (!second) {
+    if (!second && symbol != 'K') {
         int tempLocation[] = {location[0], location[1]};
         location[0] = look[0];
         location[1] = look[1];
