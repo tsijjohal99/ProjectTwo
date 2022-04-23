@@ -19,7 +19,7 @@ void resize_sprite(sf::Sprite& piece_sprite, int width, int height) {
 int main(int argc, char* argv[]) {
 	Board game;
 	bool playGame = true;
-	const int tile_size = 64;
+	int tile_size = 64;
 	const int window_size = game.getBoardSize() * tile_size;
 
 	sf::RenderWindow window(

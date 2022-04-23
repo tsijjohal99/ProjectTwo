@@ -350,9 +350,9 @@ void Board::movingPiece(std::string move, int i, int j) {
         createPiece(grid[7][j], 5, j);
         square[0] = 7;
         createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 7, j);
-    } else if (move[0] <= 'h' && move[0] >= 'a') {
+    } else {
         if (move.size() == 2) { //normal pawn movement
-            if (!grid[i][j]->getHasMoved() && abs(int(move[1] - '1') - j) == 2) {
+            if (!grid[i][j]->getHasMoved() && (int(move[1] - '1') == 4 || int(move[1] - '1') == 5)) {
                 grid[i][j]->setEnPassant(true);
             } else {
                 grid[i][j]->setEnPassant(false);
@@ -443,11 +443,21 @@ bool Board::makeMove(std::string move) {
                         std::cout << "Checkmate!" << std::endl;
                     }
 
+                    movingPiece(move, i, j);
+
                     if (!grid[i][j]->getHasMoved()) {
+                        /*if (move == "0-0") {
+                            pos = {6, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
+                        } else if (updatedMove == "0-0-0") {
+                            pos = {2, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
+                        } else if (char(updatedMove[updatedMove.size() - 2]) == '=') {
+                            pos = {int(updatedMove[updatedMove.size() - 4] - 'a'), int(updatedMove[updatedMove.size() - 3] - '1')};
+                        } else {
+                            pos = {int(updatedMove[updatedMove.size() - 2] - 'a'), int(updatedMove[updatedMove.size() - 1] - '1')};
+                        }*/
                         grid[i][j]->setHasMoved(true);
                     }
 
-                    movingPiece(move, i, j);
                     if (plus) {
                         isCheck = true;
                         std::cout << "Check!" << std::endl;
