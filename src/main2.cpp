@@ -21,9 +21,13 @@ int main(int argc, char* argv[]) {
 	bool playGame = true;
 	const int tile_size = 64;
 	const int window_size = game.getBoardSize() * tile_size;
+	int c_tile_size = 64;
+	int c_window_size = game.getBoardSize() * c_tile_size;
+	int r_tile_size = 64;
+	int r_window_size = game.getBoardSize() * r_tile_size;
 
 	sf::RenderWindow window(
-		sf::VideoMode(window_size, window_size), "Wicked Chess Game"
+		sf::VideoMode(c_window_size, r_window_size), "Wicked Chess Game"
 	);
 
 	const std::string tile_dir = "resources/tiles/";
@@ -67,6 +71,15 @@ int main(int argc, char* argv[]) {
 		while(window.pollEvent(Event)) {
 			if (Event.type == sf::Event::Closed)
 				window.close();
+			
+			/*if (Event.type == sf::Event::Resized) {
+				sf::Vector2u size = window.getSize();
+				unsigned int width = 64 * int(size.x / 64);
+				unsigned int height = 64 * int(size.y / 64);
+				sf::Style::Resize(width, height);
+				c_tile_size = width / game.getBoardSize();
+				r_tile_size = height / game.getBoardSize();
+			}*/
 
 			if (Event.type == sf::Event::KeyPressed) {
 				if (Event.key.code == sf::Keyboard::Escape) {
@@ -114,7 +127,7 @@ int main(int argc, char* argv[]) {
 										updatedMove.pop_back();
 										updatedMove += '#';
 									}
-									game.setWhoseTurn((game.getWhoseTurn() == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE);
+									game.setWhoseTurn(game.getWhoseTurn() == PieceColourType::WHITE ? PieceColourType::BLACK : PieceColourType::WHITE);
 									game.undoMove();
 								}
 
@@ -194,8 +207,8 @@ int main(int argc, char* argv[]) {
 				else
 					bg_sprite.setTexture(white_bg);
 
-				resize_sprite(bg_sprite, tile_size, tile_size);
-				bg_sprite.setPosition(c * tile_size, r * tile_size);
+				resize_sprite(bg_sprite, c_tile_size, r_tile_size);
+				bg_sprite.setPosition(c * c_tile_size, r * r_tile_size);
 
 				window.draw(bg_sprite);
 
@@ -205,35 +218,35 @@ int main(int argc, char* argv[]) {
 
 					sf::Sprite piece_sprite(texture_map.at(chess_piece->getSymbol()));
 
-					resize_sprite(piece_sprite, tile_size, tile_size);
-					piece_sprite.setPosition(c * tile_size, r * tile_size);
+					resize_sprite(piece_sprite, c_tile_size, r_tile_size);
+					piece_sprite.setPosition(c * c_tile_size, r * r_tile_size);
 					window.draw(piece_sprite);
 				}
 			}
 		}
 
 		if (piece_is_selected) {
-			sf::RectangleShape rectangle(sf::Vector2f(tile_size, tile_size));
+			sf::RectangleShape rectangle(sf::Vector2f(c_tile_size, r_tile_size));
 			rectangle.setFillColor(sf::Color(0, 0, 0, 0));
 			rectangle.setOutlineThickness(-5);
 			rectangle.setOutlineColor(sf::Color(0, 0, 0));
-			rectangle.setPosition(clicked_pos.first * tile_size, (game.getBoardSize() - 1 - clicked_pos.second) * tile_size);
+			rectangle.setPosition(clicked_pos.first * c_tile_size, (game.getBoardSize() - 1 - clicked_pos.second) * r_tile_size);
 			window.draw(rectangle);
 
 			for (const auto& pos : posssible_moves_pos) {
-				sf::RectangleShape rectangle2(sf::Vector2f(tile_size, tile_size));
+				sf::RectangleShape rectangle2(sf::Vector2f(c_tile_size, r_tile_size));
 				rectangle2.setFillColor(sf::Color(0, 0, 255, 100));
-				rectangle2.setPosition(pos.first * tile_size, (game.getBoardSize() - 1 - pos.second) * tile_size);
+				rectangle2.setPosition(pos.first * c_tile_size, (game.getBoardSize() - 1 - pos.second) * r_tile_size);
 				window.draw(rectangle2);
 			}
 		}
 
 		if (game.getIsCheck()) {
-			sf::RectangleShape rectangle2(sf::Vector2f(tile_size, tile_size));
+			sf::RectangleShape rectangle2(sf::Vector2f(c_tile_size, r_tile_size));
 			rectangle2.setFillColor(sf::Color(255, 0, 0, 100));
 			int king[] = {game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing()[0] : game.getBlackKing()[0],
 				game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing()[1] : game.getBlackKing()[1]};
-			rectangle2.setPosition(king[0] * tile_size, (game.getBoardSize() - 1 - king[1]) * tile_size);
+			rectangle2.setPosition(king[0] * c_tile_size, (game.getBoardSize() - 1 - king[1]) * r_tile_size);
 			window.draw(rectangle2);
 		}
 
