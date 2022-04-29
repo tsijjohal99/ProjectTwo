@@ -1,21 +1,24 @@
 #include "board.h"
-#include "pieceColourType.h"
-#include "rook.h"
-#include "knight.h"
-#include "bishop.h"
-#include "queen.h"
-#include "king.h"
-#include "pawn.h"
-#include "chessPiece.h"
-#include <vector>
-#include <list>
-#include <iostream>
-#include <cctype>
+
 #include <algorithm>
+#include <cctype>
+#include <exception>
+#include <iostream>
+#include <list>
 #include <string>
+#include <vector>
+
+#include "bishop.h"
+#include "chessPiece.h"
+#include "king.h"
+#include "knight.h"
+#include "pawn.h"
+#include "pieceColourType.h"
+#include "queen.h"
+#include "rook.h"
 
 Board::Board() {
-    grid.resize(boardSize, std::vector<ChessPiece*> (boardSize));
+    grid.resize(boardSize, std::vector<ChessPiece *>(boardSize));
     createBoard();
     whoseTurn = PieceColourType::WHITE;
 }
@@ -24,7 +27,7 @@ int Board::getBoardSize() {
     return boardSize;
 }
 
-std::vector<std::vector<ChessPiece*>>& Board::getGrid() {
+std::vector<std::vector<ChessPiece *>> &Board::getGrid() {
     return grid;
 }
 
@@ -48,7 +51,7 @@ void Board::setBoardSize(int size) {
     boardSize = size;
 }
 
-void Board::setGrid(std::vector<std::vector<ChessPiece*>> theGrid) {
+void Board::setGrid(std::vector<std::vector<ChessPiece *>> theGrid) {
     grid == theGrid;
 }
 
@@ -104,26 +107,27 @@ void Board::createBoard() {
 
 void Board::displayBoard() {
     std::cout << std::endl;
-    for(int i = 2*boardSize; i >=0; i--) {
-        if(i % 2 != 0)
-            std::cout << i/2 + 1;
-        for(int j = 0; j <= 2*boardSize; j++){
-            if(i % 2 == 0) {
+    for (int i = 2 * boardSize; i >= 0; i--) {
+        if (i % 2 != 0)
+            std::cout << i / 2 + 1;
+        for (int j = 0; j <= 2 * boardSize; j++) {
+            if (i % 2 == 0) {
                 if (j == 0) {
                     std::cout << " ";
                 }
-                if(j % 2 == 0)
+                if (j % 2 == 0)
                     std::cout << " ";
-                else std::cout<<"---";
+                else
+                    std::cout << "---";
             } else {
-                if(j % 2 == 0)
-                    std::cout<<"|";
+                if (j % 2 == 0)
+                    std::cout << "|";
                 else {
                     std::cout << " ";
-                    if (grid[(j-1)/2][(i-1)/2]->getPieceColour() == PieceColourType::BLACK) {
-                        std::cout << char(grid[(j-1)/2][(i-1)/2]->getSymbol() -'A' + 'a');
+                    if (grid[(j - 1) / 2][(i - 1) / 2]->getPieceColour() == PieceColourType::BLACK) {
+                        std::cout << char(grid[(j - 1) / 2][(i - 1) / 2]->getSymbol() - 'A' + 'a');
                     } else {
-                        std::cout << grid[(j-1)/2][(i-1)/2]->getSymbol();
+                        std::cout << grid[(j - 1) / 2][(i - 1) / 2]->getSymbol();
                     }
                     std::cout << " ";
                 }
@@ -131,12 +135,12 @@ void Board::displayBoard() {
         }
         std::cout << std::endl;
     }
-    std::cout<<" ";
-    for(int j = 0; j <= 4*boardSize; j++){
-        if(j % 4 == 2)
-            std::cout<<(char)(j/4 +'A');
+    std::cout << " ";
+    for (int j = 0; j <= 4 * boardSize; j++) {
+        if (j % 4 == 2)
+            std::cout << (char)(j / 4 + 'A');
         else {
-            std::cout<<" ";
+            std::cout << " ";
         }
     }
     std::cout << std::endl;
@@ -146,7 +150,7 @@ void Board::displayMovesMade() {
     int i = 1;
     for (std::string move : movesMade) {
         if (i % 2 != 0) {
-            std::cout << (i + 1)/2 << ". ";
+            std::cout << (i + 1) / 2 << ". ";
         }
         std::cout << move << " ";
         if (i % 2 == 0) {
@@ -168,20 +172,16 @@ std::list<std::string> Board::updateCheck(std::list<std::string> theLegalMoves) 
         isCheck = true;
         for (std::string aMove : oppositionLegalMoves) {
             bool remove = false;
-            if (int(aMove[aMove.size() - 2] - 'a') == whiteKing[0]
-                && int(aMove[aMove.size() - 1] - '1') == whiteKing[1]
-                && whoseTurn == PieceColourType::WHITE) {
+            if (int(aMove[aMove.size() - 2] - 'a') == whiteKing[0] && int(aMove[aMove.size() - 1] - '1') == whiteKing[1] && whoseTurn == PieceColourType::WHITE) {
                 remove = true;
-            } else if (int(aMove[aMove.size() - 2] - 'a') == blackKing[0]
-                && int(aMove[aMove.size() - 1] - '1') == blackKing[1]
-                && whoseTurn == PieceColourType::BLACK) {
+            } else if (int(aMove[aMove.size() - 2] - 'a') == blackKing[0] && int(aMove[aMove.size() - 1] - '1') == blackKing[1] && whoseTurn == PieceColourType::BLACK) {
                 remove = true;
             }
             if (remove) {
                 movesToRemove.push_back(myMove);
             }
         }
-        whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+        whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
         undoMove();
     }
     for (std::string move : movesToRemove) {
@@ -203,7 +203,7 @@ bool Board::checkCheck() {
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     std::list<std::string> withoutCheck = legalMoves(false);
     isCheck = true;
-    std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
+    std::list<std::string> withCheck = updateCheck(withoutCheck);  // this line is messing up somehow
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     isCheck = checkTemp;
     return (withCheck.size() < withoutCheck.size());
@@ -214,7 +214,7 @@ bool Board::checkCheckmate() {
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     std::list<std::string> withoutCheck = legalMoves(false);
     isCheck = true;
-    std::list<std::string> withCheck = updateCheck(withoutCheck);// this line is messing up somehow
+    std::list<std::string> withCheck = updateCheck(withoutCheck);  // this line is messing up somehow
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     isCheck = checkTemp;
     return (withCheck.size() == 0);
@@ -228,7 +228,7 @@ std::list<std::string> Board::legalMoves(bool first) {
             if (grid[i][j]->getPieceColour() == whoseTurn) {
                 std::list<std::string> theMoves = grid[i][j]->possibleMoves(grid, false);
                 for (std::string move : theMoves) {
-                    if (move[move.size()-1] == '+' & first) {
+                    if (move[move.size() - 1] == '+' && first) {
                         movingPiece(move, i, j);
                         movesMade.push_back(move);
                         if (checkCheckmate()) {
@@ -237,7 +237,7 @@ std::list<std::string> Board::legalMoves(bool first) {
                             move += '#';
                             theLegalMoves.push_back(move);
                         }
-                        whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+                        whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
                         undoMove();
                     }
                 }
@@ -287,7 +287,7 @@ void Board::findPiece(std::string move) {
 }
 
 void Board::movingPiece(std::string move, int i, int j) {
-    switch(move[move.size() - 1]) {
+    switch (move[move.size() - 1]) {
         case '+': {
             move.pop_back();
             break;
@@ -308,12 +308,12 @@ void Board::movingPiece(std::string move, int i, int j) {
         }
         createPiece(grid[4][j], 2, j);
         grid[2][j]->increaseMoveCounter();
-        int square[2] = {4,j};
-        createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 4, j);
+        int square[2] = {4, j};
+        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), 4, j);
         createPiece(grid[0][j], 3, j);
         grid[3][j]->increaseMoveCounter();
         square[0] = 0;
-        createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 0, j);
+        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), 0, j);
 
     } else if (move == "0-0") {
         if (grid[i][j]->getSymbol() == 'K') {
@@ -330,34 +330,37 @@ void Board::movingPiece(std::string move, int i, int j) {
         }
         createPiece(grid[4][j], 6, j);
         grid[6][j]->increaseMoveCounter();
-        int square[2] = {4,j};
-        createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 4, j);
+        int square[2] = {4, j};
+        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), 4, j);
         createPiece(grid[7][j], 5, j);
         grid[5][j]->increaseMoveCounter();
         square[0] = 7;
-        createPiece(new ChessPiece(square , PieceColourType::UNASSIGNED), 7, j);
+        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), 7, j);
     } else if (move[move.size() - 2] == '=') {
         int look[] = {int(move[move.size() - 4] - 'a'), int(move[move.size() - 3] - '1')};
         switch (move[move.size() - 1]) {
             case 'Q': {
-                createPiece(new Queen(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+                createPiece(new Queen(look, grid[i][j]->getPieceColour()), look[0], look[1]);
                 break;
-            } case 'R': {
-                createPiece(new Rook(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+            }
+            case 'R': {
+                createPiece(new Rook(look, grid[i][j]->getPieceColour()), look[0], look[1]);
                 break;
-            } case 'B': {
-                createPiece(new Bishop(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+            }
+            case 'B': {
+                createPiece(new Bishop(look, grid[i][j]->getPieceColour()), look[0], look[1]);
                 break;
-            } case 'N': {
-                createPiece(new Knight(look , grid[i][j]->getPieceColour()), look[0], look[1]);
+            }
+            case 'N': {
+                createPiece(new Knight(look, grid[i][j]->getPieceColour()), look[0], look[1]);
                 break;
             }
         }
         grid[look[0]][look[1]]->increaseMoveCounter();
-        int originalLocation[] = {i,j};
-        createPiece(new ChessPiece(originalLocation , PieceColourType::UNASSIGNED), i, j);
+        int originalLocation[] = {i, j};
+        createPiece(new ChessPiece(originalLocation, PieceColourType::UNASSIGNED), i, j);
     } else {
-        int look[] = {int(move[move.size()-2] - 'a'), int(move[move.size()-1] - '1')};
+        int look[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
         if (grid[i][j]->getSymbol() == 'K') {
             switch (grid[i][j]->getPieceColour()) {
                 case PieceColourType::WHITE: {
@@ -372,7 +375,7 @@ void Board::movingPiece(std::string move, int i, int j) {
                 }
             }
         } else if (grid[i][j]->getSymbol() == 'P') {
-            if (move.size() == 2) { //normal pawn movement
+            if (move.size() == 2) {  // normal pawn movement
                 if (grid[i][j]->getMoveCounter() == 0 && (look[1] == 3 || look[1] == 4)) {
                     grid[i][j]->setEnPassant(true);
                 }
@@ -384,66 +387,75 @@ void Board::movingPiece(std::string move, int i, int j) {
                 }
             }
         }
-        
+
         createPiece(grid[i][j], look[0], look[1]);
         grid[look[0]][look[1]]->increaseMoveCounter();
-        int square[] = {i,j};
-        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), i ,j);
+        int square[] = {i, j};
+        createPiece(new ChessPiece(square, PieceColourType::UNASSIGNED), i, j);
     }
 }
 
 void Board::undoMove() {
-    std::string moveToRemove = movesMade.back();
-
-    switch(moveToRemove[moveToRemove.size() - 1]) {
-        case '+': {
-            moveToRemove.pop_back();
-            break;
-        } case '#': {
-            moveToRemove.pop_back();
-            break;
+    try {
+        std::string moveToRemove = movesMade.back();
+        if (moveToRemove.empty()) {
+            throw std::logic_error("No moves to undo");
         }
-    }
 
-    if (moveToRemove == "0-0") {
-        grid[5][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
-        grid[6][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
-    } else if (movesMade.back() == "0-0-0") {
-        grid[2][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
-        grid[3][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
-    } else if (char(moveToRemove[moveToRemove.size() - 2]) == '=') {
-        grid[int(moveToRemove[moveToRemove.size() - 4] - 'a')][int(moveToRemove[moveToRemove.size() - 3] - '1')]->decreaseMoveCounter();
-    } else {
-        grid[int(moveToRemove[moveToRemove.size() - 2] - 'a')][int(moveToRemove[moveToRemove.size() - 1] - '1')]->decreaseMoveCounter();
-    }
+        switch (moveToRemove[moveToRemove.size() - 1]) {
+            case '+': {
+                moveToRemove.pop_back();
+                break;
+            }
+            case '#': {
+                moveToRemove.pop_back();
+                break;
+            }
+        }
 
-    movesMade.pop_back();
-    deleteBoard();
-    createBoard();
-    PieceColourType colourTurn = whoseTurn;
-    whoseTurn = PieceColourType::WHITE;
-    for (std::string move : movesMade) {
-        findPiece(move);
-        whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
-    }
-    whoseTurn = (colourTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
-    if (isCheck) {
-        isCheck = false;
+        if (moveToRemove == "0-0") {
+            grid[5][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+            grid[6][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+        } else if (movesMade.back() == "0-0-0") {
+            grid[2][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+            grid[3][whoseTurn == PieceColourType::WHITE ? 7 : 0]->decreaseMoveCounter();
+        } else if (char(moveToRemove[moveToRemove.size() - 2]) == '=') {
+            grid[int(moveToRemove[moveToRemove.size() - 4] - 'a')][int(moveToRemove[moveToRemove.size() - 3] - '1')]->decreaseMoveCounter();
+        } else {
+            grid[int(moveToRemove[moveToRemove.size() - 2] - 'a')][int(moveToRemove[moveToRemove.size() - 1] - '1')]->decreaseMoveCounter();
+        }
+
+        movesMade.pop_back();
+        deleteBoard();
+        createBoard();
+        PieceColourType colourTurn = whoseTurn;
+        whoseTurn = PieceColourType::WHITE;
+        for (std::string move : movesMade) {
+            findPiece(move);
+            whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
+        }
+        whoseTurn = (colourTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
+        if (isCheck) {
+            isCheck = false;
+        }
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
 bool Board::makeMove(std::string move) {
     bool plus = false, hash = false;
-    switch(move[move.size() - 1]) {
+    switch (move[move.size() - 1]) {
         case '+': {
             plus = true;
             break;
-        } case '#': {
+        }
+        case '#': {
             hash = true;
             break;
         }
     }
-        bool moveCompleted = false;
+    bool moveCompleted = false;
 
     if (hash) {
         move.pop_back();
@@ -453,7 +465,6 @@ bool Board::makeMove(std::string move) {
     for (int i = 0; i < boardSize; i++) {
         for (int j = 0; j < boardSize; j++) {
             if (grid[i][j]->getPieceColour() == whoseTurn && !moveCompleted) {
-                
                 std::list<std::string> theMoves = grid[i][j]->possibleMoves(grid, false);
                 std::list<std::string>::iterator it2;
                 it2 = std::find(theMoves.begin(), theMoves.end(), move);
@@ -483,11 +494,10 @@ bool Board::makeMove(std::string move) {
         }
     }
     movesMade.push_back(move);
-    whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK :PieceColourType::WHITE;
+    whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
 
-    
     if (!isCheck) {
-        if (legalMoves(false).empty()){
+        if (legalMoves(false).empty()) {
             std::cout << "Stalemate!" << std::endl;
             isCheckmate = true;
         }
@@ -497,7 +507,7 @@ bool Board::makeMove(std::string move) {
 
 void Board::createPiece(ChessPiece *piece, int a, int b) {
     grid[a][b] = &*piece;
-    piece->setLocation(a,b);
+    piece->setLocation(a, b);
 }
 
 void Board::removePiece(ChessPiece *piece) {
@@ -505,8 +515,8 @@ void Board::removePiece(ChessPiece *piece) {
 }
 
 void Board::deleteBoard() {
-    for (int i = 0; i < boardSize; i++ ) {
-        for (int j = 0; j < boardSize; j++ ) {
+    for (int i = 0; i < boardSize; i++) {
+        for (int j = 0; j < boardSize; j++) {
             removePiece(grid[i][j]);
         }
     }

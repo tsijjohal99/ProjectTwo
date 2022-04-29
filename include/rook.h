@@ -1,10 +1,8 @@
 #pragma once
-#include "queen.h"
 #include "pieceColourType.h"
+#include "queen.h"
 
 class Rook : public Queen {
-    
-    public:
-        Rook(int square[2], PieceColourType colour);
-
+   public:
+    Rook(int square[2], PieceColourType colour);
 };

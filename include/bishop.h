@@ -3,8 +3,6 @@
 #include "queen.h"
 
 class Bishop : public Queen {
-
-    public:
-        Bishop(int square[2], PieceColourType colour);
-    
+   public:
+    Bishop(int square[2], PieceColourType colour);
 };

@@ -1,14 +1,16 @@
 #include "pawn.h"
-#include "pieceColourType.h"
-#include "board.h"
+
 #include <list>
 #include <string>
+
+#include "board.h"
+#include "pieceColourType.h"
 
 Pawn::Pawn(int square[2], PieceColourType colour) : ChessPiece(square, colour) {
     symbol = 'P';
 }
 
-std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second) {
+std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
     std::list<std::string> whereMove;
     int start, end, neg;
     if (pieceColour == PieceColourType::WHITE) {
@@ -20,17 +22,17 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
         end = 0;
         neg = -1;
     }
-    int look[] = {location[0], location[1] + neg*1};
+    int look[] = {location[0], location[1] + neg * 1};
     int lookLeft[2];
     int lookRight[2];
     if (location[1] != end) {
         if (spaceEmpty(grid, look)) {
             whereMove.push_back(constructMove(look, grid, false, second));
-            look[1] += neg*1;
+            look[1] += neg * 1;
             if (location[1] == start && spaceEmpty(grid, look)) {
                 whereMove.push_back(constructMove(look, grid, false, second));
             }
-            look[1] -= neg*1;
+            look[1] -= neg * 1;
         }
         if (location[0] != 0) {
             lookLeft[0] = look[0] - 1;
@@ -38,9 +40,9 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
             if (spaceEnemy(grid, lookLeft)) {
                 whereMove.push_back(constructMove(lookLeft, grid, true, second));
             }
-            lookLeft[1] = lookLeft[1] - neg*1;
+            lookLeft[1] = lookLeft[1] - neg * 1;
             if (spaceEnemy(grid, lookLeft) && grid[lookLeft[0]][lookLeft[1]]->getEnPassant()) {
-                lookLeft[1] = lookLeft[1] + neg*1;
+                lookLeft[1] = lookLeft[1] + neg * 1;
                 whereMove.push_back(constructMove(lookLeft, grid, true, second));
             }
         }
@@ -50,9 +52,9 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
             if (spaceEnemy(grid, lookRight)) {
                 whereMove.push_back(constructMove(lookRight, grid, true, second));
             }
-            lookRight[1] = lookRight[1] - neg*1;
+            lookRight[1] = lookRight[1] - neg * 1;
             if (spaceEnemy(grid, lookRight) && grid[lookRight[0]][lookRight[1]]->getEnPassant()) {
-                lookRight[1] = lookRight[1] + neg*1;
+                lookRight[1] = lookRight[1] + neg * 1;
                 whereMove.push_back(constructMove(lookRight, grid, true, second));
             }
         }
@@ -60,7 +62,7 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece*>>
     return whereMove;
 }
 
-std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy, bool second) {
+std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     if (enemy) {
         theMove += char('a' + location[0]);
@@ -68,14 +70,14 @@ std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece*>
     }
     theMove += char('a' + look[0]);
     theMove += char('1' + look[1]);
-    
+
     int end = (pieceColour == PieceColourType::WHITE) ? 7 : 0;
 
     if (look[1] == end) {
         theMove += "=Q";
-        //theMove += "=R";
-        //theMove += "=B";
-        //theMove += "=N";
+        // theMove += "=R";
+        // theMove += "=B";
+        // theMove += "=N";
     }
 
     if (!second) {
@@ -91,7 +93,7 @@ std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece*>
             temp.setGrid(grid);
             temp.setWhoseTurn(pieceColour);
             temp.movingPiece(theMove, tempLocation[0], tempLocation[1]);
-            std::vector<std::vector<ChessPiece*>> tempGrid = temp.getGrid();
+            std::vector<std::vector<ChessPiece *>> tempGrid = temp.getGrid();
             tempGrid[location[0]][location[1]]->setPieceColour(pieceColour);
             PieceColourType colour = tempGrid[location[0]][location[1]]->getPieceColour();
             checkForCheck = tempGrid[location[0]][location[1]]->possibleMoves(tempGrid, true);

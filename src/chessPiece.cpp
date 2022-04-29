@@ -1,9 +1,11 @@
 #include "chessPiece.h"
-#include "pieceColourType.h"
-#include <iostream>
-#include <vector>
+
 #include <cmath>
+#include <iostream>
 #include <string>
+#include <vector>
+
+#include "pieceColourType.h"
 
 ChessPiece::ChessPiece(int square[2], PieceColourType colour) {
     location[0] = square[0];
@@ -53,28 +55,24 @@ int ChessPiece::getMoveCounter() {
     return moveCounter;
 }
 
-std::list<std::string> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second) {
+std::list<std::string> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
     std::list<std::string> empty;
     return empty;
 }
 
-bool ChessPiece::spaceEmpty(std::vector<std::vector<ChessPiece*>> &grid, int look[]) {
+bool ChessPiece::spaceEmpty(std::vector<std::vector<ChessPiece *>> &grid, int look[]) {
     return (grid[look[0]][look[1]]->getPieceColour() == PieceColourType::UNASSIGNED);
 }
 
-bool ChessPiece::spaceEnemy(std::vector<std::vector<ChessPiece*>> &grid, int look[]) {
-    int s = int(grid[look[0]][look[1]]->getSymbol());
-    if ((pieceColour == PieceColourType::WHITE 
-    && grid[look[0]][look[1]]->getPieceColour() == PieceColourType::BLACK)
-    || (pieceColour == PieceColourType::BLACK 
-    && grid[look[0]][look[1]]->getPieceColour() == PieceColourType::WHITE)) {
+bool ChessPiece::spaceEnemy(std::vector<std::vector<ChessPiece *>> &grid, int look[]) {
+    if ((pieceColour == PieceColourType::WHITE && grid[look[0]][look[1]]->getPieceColour() == PieceColourType::BLACK) || (pieceColour == PieceColourType::BLACK && grid[look[0]][look[1]]->getPieceColour() == PieceColourType::WHITE)) {
         return true;
     } else {
         return false;
     }
 }
 
-std::string ChessPiece::constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy, bool second) {
+std::string ChessPiece::constructMove(int look[], std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     theMove += symbol;
     if (enemy) {

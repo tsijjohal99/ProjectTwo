@@ -1,48 +1,49 @@
 #pragma once
-#include "chessPiece.h"
-#include <vector>
-#include <list>
 #include <iostream>
+#include <list>
+#include <vector>
+
+#include "chessPiece.h"
 
 class Board {
-    private:
-        int boardSize = 8;
-        std::vector<std::vector<ChessPiece*>> grid;
-        bool isCheck = false;
-        bool isCheckmate = false;
-        PieceColourType whoseTurn;
-        int blackKing[2];
-        int whiteKing[2];
-        std::list<std::string> movesMade;
+   private:
+    int boardSize = 8;
+    std::vector<std::vector<ChessPiece *>> grid;
+    bool isCheck = false;
+    bool isCheckmate = false;
+    PieceColourType whoseTurn;
+    int blackKing[2];
+    int whiteKing[2];
+    std::list<std::string> movesMade;
 
-    public:
-        Board();
+   public:
+    Board();
 
-        int getBoardSize();
-        std::vector<std::vector<ChessPiece*>>& getGrid();
-        PieceColourType getWhoseTurn();
-        bool getIsCheck();
-        int *getBlackKing();
-        int *getWhiteKing();
-        void setBoardSize(int size);
-        void setGrid(std::vector<std::vector<ChessPiece*>> theGrid);
-        void setWhoseTurn(PieceColourType colour);
-        void setIsCheck(bool check);
+    int getBoardSize();
+    std::vector<std::vector<ChessPiece *>> &getGrid();
+    PieceColourType getWhoseTurn();
+    bool getIsCheck();
+    int *getBlackKing();
+    int *getWhiteKing();
+    void setBoardSize(int size);
+    void setGrid(std::vector<std::vector<ChessPiece *>> theGrid);
+    void setWhoseTurn(PieceColourType colour);
+    void setIsCheck(bool check);
 
-        void addMove(std::string move);
-        void createBoard();
-        void displayBoard();
-        void displayMovesMade();
-        std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
-        bool checkCheck();
-        bool checkCheckmate();
-        std::list<std::string> legalMoves(bool first);
-        void displayLegalMoves();
-        void findPiece(std::string move);
-        void movingPiece(std::string move, int i, int j);
-        void undoMove();
-        bool makeMove(std::string move);
-        void createPiece(ChessPiece *piece, int a, int b);
-        void removePiece(ChessPiece *piece);
-        void deleteBoard();
+    void addMove(std::string move);
+    void createBoard();
+    void displayBoard();
+    void displayMovesMade();
+    std::list<std::string> updateCheck(std::list<std::string> theLegalMoves);
+    bool checkCheck();
+    bool checkCheckmate();
+    std::list<std::string> legalMoves(bool first);
+    void displayLegalMoves();
+    void findPiece(std::string move);
+    void movingPiece(std::string move, int i, int j);
+    void undoMove();
+    bool makeMove(std::string move);
+    void createPiece(ChessPiece *piece, int a, int b);
+    void removePiece(ChessPiece *piece);
+    void deleteBoard();
 };

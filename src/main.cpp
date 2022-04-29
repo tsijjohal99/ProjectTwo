@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "board.h"
 #include "pieceColourType.h"
 
@@ -21,27 +22,22 @@ void createNewGame() {
         std::cout << "Press 0 to quit game. " << std::endl;
         std::string input;
         std::cin >> input;
-        try {
-            if (input == "0") {
-                playGame = false;
-                system("cls");
-            } else if (input == "1") {
-                system("cls");
-                game.displayLegalMoves();
-            } else if (input == "2") {
-                system("cls");
-                game.undoMove();
-            } else if (input == "3") {
-                system("cls");
-                game.displayMovesMade();
-            } else {
-                system("cls");
-                playGame = game.makeMove(input);
-            }
-        } catch (const std::overflow_error& e) {}
-        catch (const std::runtime_error& e) {}
-        catch (const std::exception& e) {}
-        catch (...) {}
+        if (input == "0") {
+            playGame = false;
+            system("cls");
+        } else if (input == "1") {
+            system("cls");
+            game.displayLegalMoves();
+        } else if (input == "2") {
+            system("cls");
+            game.undoMove();
+        } else if (input == "3") {
+            system("cls");
+            game.displayMovesMade();
+        } else {
+            system("cls");
+            playGame = game.makeMove(input);
+        }
     }
     game.deleteBoard();
 }

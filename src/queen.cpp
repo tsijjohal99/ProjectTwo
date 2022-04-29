@@ -1,21 +1,23 @@
 #include "queen.h"
-#include "pieceColourType.h"
-#include <vector>
-#include <list>
+
 #include <iostream>
+#include <list>
 #include <string>
+#include <vector>
+
+#include "pieceColourType.h"
 
 Queen::Queen(int square[2], PieceColourType colour) : ChessPiece(square, colour) {
     symbol = 'Q';
     maxMovement = 8;
 }
 
-std::list<std::string> Queen::slide(std::vector<std::vector<ChessPiece*>> &grid, int direction[], bool second) {
+std::list<std::string> Queen::slide(std::vector<std::vector<ChessPiece *>> &grid, int direction[], bool second) {
     std::list<std::string> whereMove;
-    int look[2] = {location[0], location[1]}; 
-    for (int i = 1; location[0] + i*direction[0] < 8 && location[0] + i*direction[0] >= 0 && location[1] + i*direction[1] < 8 && location[1] + i*direction[1] >= 0 && i < maxMovement; i++) {
-        look[0] = location[0] + i*direction[0];
-        look[1] = location[1] + i*direction[1];
+    int look[2] = {location[0], location[1]};
+    for (int i = 1; location[0] + i * direction[0] < 8 && location[0] + i * direction[0] >= 0 && location[1] + i * direction[1] < 8 && location[1] + i * direction[1] >= 0 && i < maxMovement; i++) {
+        look[0] = location[0] + i * direction[0];
+        look[1] = location[1] + i * direction[1];
         if (ChessPiece::spaceEmpty(grid, look)) {
             bool kissingKings = false;
             if (symbol == 'K' && !second) {
@@ -37,7 +39,7 @@ std::list<std::string> Queen::slide(std::vector<std::vector<ChessPiece*>> &grid,
             if (!kissingKings) {
                 whereMove.push_back(constructMove(look, grid, false, second));
             }
-        } else if (ChessPiece::spaceEnemy(grid, look)) { 
+        } else if (ChessPiece::spaceEnemy(grid, look)) {
             whereMove.push_back(constructMove(look, grid, true, second));
             break;
         } else {
@@ -47,13 +49,12 @@ std::list<std::string> Queen::slide(std::vector<std::vector<ChessPiece*>> &grid,
     return whereMove;
 }
 
-std::list<std::string> Queen::possibleMoves(std::vector<std::vector<ChessPiece*>> &grid, bool second) {
-    int square[2] = {Queen::getLocation()[0], Queen::getLocation()[1]};
+std::list<std::string> Queen::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
     std::list<std::string> whereMove;
 
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
-            int direction[] = {i,j};
+            int direction[] = {i, j};
             if (i != 0 || j != 0) {
                 if ((i == -j || i == j) && symbol != 'R') {
                     std::list<std::string> moves = slide(grid, direction, second);
@@ -69,11 +70,9 @@ std::list<std::string> Queen::possibleMoves(std::vector<std::vector<ChessPiece*>
     return whereMove;
 }
 
-bool Queen::constructMoveSlide(std::string &theMove, int look[], std::vector<std::vector<ChessPiece*>> &grid, int direction[]) {
-    for (int i = 1; look[0] + i*direction[0] < 8 && look[0] + i*direction[0] >= 0 && look[1] + i*direction[1] < 8 && look[1] + i*direction[1] >= 0 && i < maxMovement; i++) {
-        if (grid[look[0] + i*direction[0]][look[1] + i*direction[1]]->getPieceColour() == pieceColour 
-        && grid[look[0] + i*direction[0]][look[1] + i*direction[1]]->getSymbol() == symbol
-        && (look[0] + i*direction[0] != location[0] && look[1] + i*direction[1] != location[1]) ) {
+bool Queen::constructMoveSlide(std::string &theMove, int look[], std::vector<std::vector<ChessPiece *>> &grid, int direction[]) {
+    for (int i = 1; look[0] + i * direction[0] < 8 && look[0] + i * direction[0] >= 0 && look[1] + i * direction[1] < 8 && look[1] + i * direction[1] >= 0 && i < maxMovement; i++) {
+        if (grid[look[0] + i * direction[0]][look[1] + i * direction[1]]->getPieceColour() == pieceColour && grid[look[0] + i * direction[0]][look[1] + i * direction[1]]->getSymbol() == symbol && (look[0] + i * direction[0] != location[0] && look[1] + i * direction[1] != location[1])) {
             if (look[0] == location[0]) {
                 theMove += char('a' + location[0]);
             } else {
@@ -85,14 +84,14 @@ bool Queen::constructMoveSlide(std::string &theMove, int look[], std::vector<std
     return false;
 }
 
-std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece*>> &grid, bool enemy, bool second) {
+std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     bool foundSecond = false;
     theMove += symbol;
     for (int i = -1; !foundSecond && i < 2; i++) {
         for (int j = -1; !foundSecond && j < 2; j++) {
-            int direction[] = {i,j};
-            if ((i != 0 || j != 0) && !foundSecond) { //XOR
+            int direction[] = {i, j};
+            if ((i != 0 || j != 0) && !foundSecond) {  // XOR
                 if ((i == -j || i == j) && symbol != 'R') {
                     foundSecond = constructMoveSlide(theMove, look, grid, direction);
                 } else if (i != j && symbol != 'B') {
