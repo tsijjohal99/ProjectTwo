@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
         sf::Texture white_texture;
         sf::Texture black_texture;
 
-        auto tile_path = [&tile_dir, &tile](std::string colour) {
+        auto tile_path = [&tile_dir, &tile](const std::string& colour) {
             return tile_dir + colour + '/' + tile + ".png";
         };
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
         black_tile_texture_map.insert({tile, black_texture});
     }
 
-    ChessPiece* selected_piece{};
+    // ChessPiece* selected_piece{};
     std::pair<int, int> clicked_pos{};
     bool piece_is_selected{false};
 
@@ -169,6 +169,8 @@ int main(int argc, char* argv[]) {
                             }
                         }
                         game.setIsCheck(check);
+
+                        // delete selected_piece;
 
                     } else {
                         std::pair<int, int> new_clicked_pos{};

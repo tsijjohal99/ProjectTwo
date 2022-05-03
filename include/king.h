@@ -9,5 +9,5 @@ class King : public Queen {
     King(int square[2], PieceColourType colour);
 
     void checkCastle(std::list<std::string> &whereMove, std::vector<std::vector<ChessPiece *>> &grid);
-    std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second);
+    std::list<std::string> possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) override;
 };

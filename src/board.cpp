@@ -191,7 +191,7 @@ std::list<std::string> Board::updateCheck(std::list<std::string> theLegalMoves) 
                 theLegalMoves.erase(it);
                 break;
             } else {
-                it++;
+                ++it;
             }
         }
     }
@@ -252,7 +252,7 @@ std::list<std::string> Board::legalMoves(bool first) {
                 theLegalMoves.erase(it);
                 break;
             } else {
-                it++;
+                ++it;
             }
         }
     }

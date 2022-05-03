@@ -54,8 +54,8 @@ std::list<std::string> Queen::possibleMoves(std::vector<std::vector<ChessPiece *
 
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
-            int direction[] = {i, j};
             if (i != 0 || j != 0) {
+                int direction[] = {i, j};
                 if ((i == -j || i == j) && symbol != 'R') {
                     std::list<std::string> moves = slide(grid, direction, second);
                     whereMove.insert(whereMove.end(), moves.begin(), moves.end());
@@ -90,8 +90,8 @@ std::string Queen::constructMove(int look[], std::vector<std::vector<ChessPiece 
     theMove += symbol;
     for (int i = -1; !foundSecond && i < 2; i++) {
         for (int j = -1; !foundSecond && j < 2; j++) {
-            int direction[] = {i, j};
             if ((i != 0 || j != 0) && !foundSecond) {  // XOR
+                int direction[] = {i, j};
                 if ((i == -j || i == j) && symbol != 'R') {
                     foundSecond = constructMoveSlide(theMove, look, grid, direction);
                 } else if (i != j && symbol != 'B') {

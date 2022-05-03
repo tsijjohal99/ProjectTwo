@@ -68,8 +68,6 @@ bool displayMenu() {
 }
 
 int main() {
-    std::cout << std::unitbuf;
-
     bool menu = true;
     while (menu) {
         menu = displayMenu();
