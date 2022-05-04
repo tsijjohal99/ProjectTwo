@@ -3,23 +3,24 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <tuple>
 
 #include "pieceColourType.h"
 
-Knight::Knight(int square[2], PieceColourType colour) : ChessPiece(square, colour) {
+Knight::Knight(std::pair<int, int> square, PieceColourType colour) : ChessPiece(square, colour) {
     symbol = 'N';
 }
 
-std::list<std::string> Knight::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
-    std::list<std::string> whereMove;
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Knight::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove;
     for (int i = -2; i < 3; i++) {
         for (int j = -2; j < 3; j++) {
-            int look[] = {location[0] + i, location[1] + j};
-            if (pow(i, 2) + pow(j, 2) == 5 && look[0] >= 0 && look[1] >= 0 && look[0] < 8 && look[1] < 8) {
+            std::pair<int, int> look = {location.first + i, location.second + j};
+            if (pow(i, 2) + pow(j, 2) == 5 && look.first >= 0 && look.second >= 0 && look.first < 8 && look.second < 8) {
                 if (Knight::spaceEmpty(grid, look)) {
-                    whereMove.push_back(constructMove(look, grid, false, second));
+                    whereMove.push_back(std::make_tuple(constructMove(look, grid, false, second), location, look));
                 } else if (Knight::spaceEnemy(grid, look)) {
-                    whereMove.push_back(constructMove(look, grid, true, second));
+                    whereMove.push_back(std::make_tuple(constructMove(look, grid, true, second), location, look));
                 }
             }
         }
@@ -27,17 +28,17 @@ std::list<std::string> Knight::possibleMoves(std::vector<std::vector<ChessPiece 
     return whereMove;
 }
 
-std::string Knight::constructMove(int look[], std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
+std::string Knight::constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     bool secondPiece = false;
     theMove += symbol;
     for (int i = -2; !secondPiece, i < 3; i++) {
         for (int j = -2; !secondPiece, j < 3; j++) {
-            if (pow(i, 2) + pow(j, 2) == 5 && look[0] + i >= 0 && look[1] + j >= 0 && look[0] + i < 8 && look[1] + j < 8 && grid[look[0] + i][look[1] + j]->getPieceColour() == pieceColour && grid[look[0] + i][look[1] + j]->getSymbol() == symbol && look[0] + i != location[0] && look[1] + j != location[1]) {
-                if (location[0] == look[0] + i) {
-                    theMove += char('1' + location[1]);
+            if (pow(i, 2) + pow(j, 2) == 5 && look.first + i >= 0 && look.second + j >= 0 && look.first + i < 8 && look.second + j < 8 && grid[look.first + i][look.second + j]->getPieceColour() == pieceColour && grid[look.first + i][look.second + j]->getSymbol() == symbol && look.first + i != location.first && look.second + j != location.second) {
+                if (location.first == look.first + i) {
+                    theMove += char('1' + location.second);
                 } else {
-                    theMove += char('a' + location[0]);
+                    theMove += char('a' + location.first);
                 }
                 secondPiece = true;
             }
@@ -46,21 +47,19 @@ std::string Knight::constructMove(int look[], std::vector<std::vector<ChessPiece
     if (enemy) {
         theMove += 'x';
     }
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);
+    theMove += char('a' + look.first);
+    theMove += char('1' + look.second);
     if (!second) {
-        int tempLocation[] = {location[0], location[1]};
-        location[0] = look[0];
-        location[1] = look[1];
-        std::list<std::string> checkForCheck = possibleMoves(grid, true);
-        for (std::string move : checkForCheck) {
-            int square[] = {int(move[move.size() - 2] - 'a'), int(move[move.size() - 1] - '1')};
+        std::pair<int, int> tempLocation = location;
+        location = look;
+        std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> checkForCheck = possibleMoves(grid, true);
+        for (std::tuple move : checkForCheck) {
+            int square[] = {int(std::get<0>(move)[std::get<0>(move).size() - 2] - 'a'), int(std::get<0>(move)[std::get<0>(move).size() - 1] - '1')};
             if (grid[square[0]][square[1]]->getSymbol() == 'K' && grid[square[0]][square[1]]->getPieceColour() != pieceColour) {
                 theMove += '+';
             }
         }
-        location[0] = tempLocation[0];
-        location[1] = tempLocation[1];
+        location = tempLocation;
     }
     return theMove;
 }

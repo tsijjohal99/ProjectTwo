@@ -4,5 +4,5 @@
 
 class Bishop : public Queen {
    public:
-    Bishop(int square[2], PieceColourType colour);
+    Bishop(std::pair<int, int> square, PieceColourType colour);
 };

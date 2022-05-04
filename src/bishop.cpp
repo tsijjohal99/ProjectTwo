@@ -2,6 +2,6 @@
 
 #include "pieceColourType.h"
 
-Bishop::Bishop(int square[2], PieceColourType colour) : Queen(square, colour) {
+Bishop::Bishop(std::pair<int, int> square, PieceColourType colour) : Queen(square, colour) {
     symbol = 'B';
 }

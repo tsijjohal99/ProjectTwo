@@ -60,8 +60,7 @@ int main(int argc, char* argv[]) {
     std::pair<int, int> clicked_pos{};
     bool piece_is_selected{false};
 
-    std::vector<std::pair<int, int>> posssible_moves_pos{};
-    std::vector<std::string> possible_moves_str{};
+    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> posssible_moves_with_check;
 
     while (window.isOpen() & playGame) {
         sf::Event Event;
@@ -83,11 +82,11 @@ int main(int argc, char* argv[]) {
             if (Event.type == sf::Event::KeyPressed) {
                 if (Event.key.code == sf::Keyboard::Escape) {
                     piece_is_selected = false;
-                    posssible_moves_pos.clear();
+                    posssible_moves_with_check.clear();
                 } else if (Event.key.code == sf::Keyboard::Left) {
                     game.undoMove();
                     piece_is_selected = false;
-                    posssible_moves_pos.clear();
+                    posssible_moves_with_check.clear();
                 }
             }
 
@@ -112,15 +111,17 @@ int main(int argc, char* argv[]) {
                         // std::cout << "colour clicked: " << colour << std::endl;
 
                         if (selected_piece->getPieceColour() == game.getWhoseTurn()) {
-                            std::list<std::string> posssible_moves = selected_piece->possibleMoves(game.getGrid(), false);
-                            std::list<std::string> posssible_moves_with_check;
+                            std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> posssible_moves = selected_piece->possibleMoves(game.getGrid(), false);
+                            // std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> posssible_moves_with_check;
 
                             for (const auto& move : posssible_moves) {
-                                std::string updatedMove = move;
+                                std::string updatedMove;
+                                std::pair<int, int> original, target;
+                                tie(updatedMove, original, target) = move;
 
                                 if (updatedMove[updatedMove.size() - 1] == '+') {
-                                    game.movingPiece(updatedMove, clicked_pos.first, clicked_pos.second);
-                                    game.addMove(updatedMove);
+                                    game.movingPiece(updatedMove, original, target);
+                                    game.addMove(move);
                                     if (game.checkCheckmate()) {
                                         updatedMove.pop_back();
                                         updatedMove += '#';
@@ -129,43 +130,11 @@ int main(int argc, char* argv[]) {
                                     game.undoMove();
                                 }
 
-                                posssible_moves_with_check.push_back(updatedMove);
+                                posssible_moves_with_check.push_back(std::make_tuple(updatedMove, original, target));
                             }
 
                             if (game.getIsCheck()) {
                                 posssible_moves_with_check = game.updateCheck(posssible_moves_with_check);
-                            }
-
-                            for (const auto& move : posssible_moves_with_check) {
-                                std::string updatedMove = move;
-
-                                possible_moves_str.push_back(updatedMove);
-                                std::pair<int, int> pos{};
-
-                                switch (updatedMove[updatedMove.size() - 1]) {
-                                    case '+': {
-                                        updatedMove.pop_back();
-                                        break;
-                                    }
-                                    case '#': {
-                                        updatedMove.pop_back();
-                                        break;
-                                    }
-                                }
-
-                                if (updatedMove == "0-0") {
-                                    pos = {6, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
-                                } else if (updatedMove == "0-0-0") {
-                                    pos = {2, selected_piece->getPieceColour() == PieceColourType::WHITE ? 0 : 7};
-                                } else if (char(updatedMove[updatedMove.size() - 2]) == '=') {
-                                    pos = {int(updatedMove[updatedMove.size() - 4] - 'a'), int(updatedMove[updatedMove.size() - 3] - '1')};
-                                } else {
-                                    pos = {int(updatedMove[updatedMove.size() - 2] - 'a'), int(updatedMove[updatedMove.size() - 1] - '1')};
-                                }
-
-                                // std::cout << pos.first << ", " << pos.second << std::endl;
-
-                                posssible_moves_pos.push_back(pos);
                             }
                         }
                         game.setIsCheck(check);
@@ -178,16 +147,15 @@ int main(int argc, char* argv[]) {
                         new_clicked_pos.first = Event.mouseButton.x / tile_size;
                         new_clicked_pos.second = game.getBoardSize() - 1 - int(Event.mouseButton.y / tile_size);
 
-                        for (int i = 0; i < posssible_moves_pos.size(); i++) {
-                            if (new_clicked_pos == posssible_moves_pos[i]) {
-                                playGame = game.makeMove(possible_moves_str[i]);
+                        for (const auto moveInfo : posssible_moves_with_check) {
+                            if (new_clicked_pos == std::get<2>(moveInfo)) {
+                                playGame = game.makeMove(moveInfo);
 
                                 break;
                             }
                         }
+                        posssible_moves_with_check.clear();
                         piece_is_selected = false;
-                        posssible_moves_pos.clear();
-                        possible_moves_str.clear();
                     }
                 }
             }
@@ -232,10 +200,10 @@ int main(int argc, char* argv[]) {
             rectangle.setPosition(clicked_pos.first * c_tile_size, (game.getBoardSize() - 1 - clicked_pos.second) * r_tile_size);
             window.draw(rectangle);
 
-            for (const auto& pos : posssible_moves_pos) {
+            for (const auto& moveInfo : posssible_moves_with_check) {
                 sf::RectangleShape rectangle2(sf::Vector2f(c_tile_size, r_tile_size));
                 rectangle2.setFillColor(sf::Color(0, 0, 255, 100));
-                rectangle2.setPosition(pos.first * c_tile_size, (game.getBoardSize() - 1 - pos.second) * r_tile_size);
+                rectangle2.setPosition(std::get<2>(moveInfo).first * c_tile_size, (game.getBoardSize() - 1 - std::get<2>(moveInfo).second) * r_tile_size);
                 window.draw(rectangle2);
             }
         }
@@ -243,16 +211,14 @@ int main(int argc, char* argv[]) {
         if (game.getIsCheck()) {
             sf::RectangleShape rectangle2(sf::Vector2f(c_tile_size, r_tile_size));
             rectangle2.setFillColor(sf::Color(255, 0, 0, 100));
-            int king[] = {game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing()[0] : game.getBlackKing()[0],
-                          game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing()[1] : game.getBlackKing()[1]};
-            rectangle2.setPosition(king[0] * c_tile_size, (game.getBoardSize() - 1 - king[1]) * r_tile_size);
+            std::pair<int, int> king{game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing().first : game.getBlackKing().first,
+                                     game.getWhoseTurn() == PieceColourType::WHITE ? game.getWhiteKing().second : game.getBlackKing().second};
+            rectangle2.setPosition(king.first * c_tile_size, (game.getBoardSize() - 1 - king.second) * r_tile_size);
             window.draw(rectangle2);
         }
 
         window.display();
     }
-
-    game.deleteBoard();
 
     return 0;
 }

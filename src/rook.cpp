@@ -2,6 +2,6 @@
 
 #include "pieceColourType.h"
 
-Rook::Rook(int square[2], PieceColourType colour) : Queen(square, colour) {
+Rook::Rook(std::pair<int, int> square, PieceColourType colour) : Queen(square, colour) {
     symbol = 'R';
 }

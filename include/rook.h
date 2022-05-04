@@ -4,5 +4,5 @@
 
 class Rook : public Queen {
    public:
-    Rook(int square[2], PieceColourType colour);
+    Rook(std::pair<int, int> square, PieceColourType colour);
 };

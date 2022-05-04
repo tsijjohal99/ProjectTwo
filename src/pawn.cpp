@@ -1,17 +1,20 @@
 #include "pawn.h"
 
+#include <iostream>
 #include <list>
 #include <string>
+#include <tuple>
+#include <utility>
 
 #include "board.h"
 #include "pieceColourType.h"
 
-Pawn::Pawn(int square[2], PieceColourType colour) : ChessPiece(square, colour) {
+Pawn::Pawn(std::pair<int, int> square, PieceColourType colour) : ChessPiece(square, colour) {
     symbol = 'P';
 }
 
-std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
-    std::list<std::string> whereMove;
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Pawn::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove;
     int start, end, neg;
     if (pieceColour == PieceColourType::WHITE) {
         start = 1;
@@ -22,58 +25,56 @@ std::list<std::string> Pawn::possibleMoves(std::vector<std::vector<ChessPiece *>
         end = 0;
         neg = -1;
     }
-    int look[] = {location[0], location[1] + neg * 1};
-    int lookLeft[2];
-    int lookRight[2];
-    if (location[1] != end) {
+    std::pair<int, int> look = {location.first, location.second + neg * 1};
+    std::pair<int, int> lookLeft;
+    std::pair<int, int> lookRight;
+    if (location.second != end) {
         if (spaceEmpty(grid, look)) {
-            whereMove.push_back(constructMove(look, grid, false, second));
-            look[1] += neg * 1;
-            if (location[1] == start && spaceEmpty(grid, look)) {
-                whereMove.push_back(constructMove(look, grid, false, second));
+            whereMove.push_back(std::make_tuple(constructMove(look, grid, false, second), location, look));
+            look.second += neg * 1;
+            if (location.second == start && spaceEmpty(grid, look)) {
+                whereMove.push_back(std::make_tuple(constructMove(look, grid, false, second), location, look));
             }
-            look[1] -= neg * 1;
+            look.second -= neg * 1;
         }
-        if (location[0] != 0) {
-            lookLeft[0] = look[0] - 1;
-            lookLeft[1] = look[1];
+        if (location.first != 0) {
+            lookLeft = std::make_pair(look.first - 1, look.second);
             if (spaceEnemy(grid, lookLeft)) {
-                whereMove.push_back(constructMove(lookLeft, grid, true, second));
+                whereMove.push_back(std::make_tuple(constructMove(lookLeft, grid, true, second), location, lookLeft));
             }
-            lookLeft[1] = lookLeft[1] - neg * 1;
-            if (spaceEnemy(grid, lookLeft) && grid[lookLeft[0]][lookLeft[1]]->getEnPassant()) {
-                lookLeft[1] = lookLeft[1] + neg * 1;
-                whereMove.push_back(constructMove(lookLeft, grid, true, second));
+            lookLeft.second = lookLeft.second - neg * 1;
+            if (spaceEnemy(grid, lookLeft) && grid[lookLeft.first][lookLeft.second]->getEnPassant()) {
+                lookLeft.second = lookLeft.second + neg * 1;
+                whereMove.push_back(std::make_tuple(constructMove(lookLeft, grid, true, second), location, lookLeft));
             }
         }
-        if (location[0] != 7) {
-            lookRight[0] = look[0] + 1;
-            lookRight[1] = look[1];
+        if (location.first != 7) {
+            lookRight = std::make_pair(look.first + 1, look.second);
             if (spaceEnemy(grid, lookRight)) {
-                whereMove.push_back(constructMove(lookRight, grid, true, second));
+                whereMove.push_back(std::make_tuple(constructMove(lookRight, grid, true, second), location, lookRight));
             }
-            lookRight[1] = lookRight[1] - neg * 1;
-            if (spaceEnemy(grid, lookRight) && grid[lookRight[0]][lookRight[1]]->getEnPassant()) {
-                lookRight[1] = lookRight[1] + neg * 1;
-                whereMove.push_back(constructMove(lookRight, grid, true, second));
+            lookRight.second = lookRight.second - neg * 1;
+            if (spaceEnemy(grid, lookRight) && grid[lookRight.first][lookRight.second]->getEnPassant()) {
+                lookRight.second = lookRight.second + neg * 1;
+                whereMove.push_back(std::make_tuple(constructMove(lookRight, grid, true, second), location, lookRight));
             }
         }
     }
     return whereMove;
 }
 
-std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
+std::string Pawn::constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     if (enemy) {
-        theMove += char('a' + location[0]);
+        theMove += char('a' + location.first);
         theMove += 'x';
     }
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);
+    theMove += char('a' + look.first);
+    theMove += char('1' + look.second);
 
     int end = (pieceColour == PieceColourType::WHITE) ? 7 : 0;
 
-    if (look[1] == end) {
+    if (look.second == end) {
         theMove += "=Q";
         // theMove += "=R";
         // theMove += "=B";
@@ -81,10 +82,9 @@ std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece *
     }
 
     if (!second) {
-        int tempLocation[] = {location[0], location[1]};
-        location[0] = look[0];
-        location[1] = look[1];
-        std::list<std::string> checkForCheck;
+        std::pair<int, int> tempLocation = location;
+        location = look;
+        std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> checkForCheck;
 
         if (theMove[theMove.size() - 2] != '=') {
             checkForCheck = possibleMoves(grid, true);
@@ -92,29 +92,29 @@ std::string Pawn::constructMove(int look[], std::vector<std::vector<ChessPiece *
             Board temp;
             temp.setGrid(grid);
             temp.setWhoseTurn(pieceColour);
-            temp.movingPiece(theMove, tempLocation[0], tempLocation[1]);
+            temp.movingPiece(theMove, tempLocation, location);
             std::vector<std::vector<ChessPiece *>> tempGrid = temp.getGrid();
-            tempGrid[location[0]][location[1]]->setPieceColour(pieceColour);
-            PieceColourType colour = tempGrid[location[0]][location[1]]->getPieceColour();
-            checkForCheck = tempGrid[location[0]][location[1]]->possibleMoves(tempGrid, true);
+            tempGrid[location.first][location.second]->setPieceColour(pieceColour);
+            PieceColourType colour = tempGrid[location.first][location.second]->getPieceColour();
+            checkForCheck = tempGrid[location.first][location.second]->possibleMoves(tempGrid, true);
             temp.deleteBoard();
         }
-        for (std::string move : checkForCheck) {
+        for (std::tuple move : checkForCheck) {
             int square[2];
-            if (move[move.size() - 2] == '=') {
-                square[0] = int(move[move.size() - 4] - 'a');
-                square[1] = int(move[move.size() - 3] - '1');
+            if (std::get<0>(move)[std::get<0>(move).size() - 2] == '=') {
+                square[0] = int(std::get<0>(move)[std::get<0>(move).size() - 4] - 'a');
+                square[1] = int(std::get<0>(move)[std::get<0>(move).size() - 3] - '1');
             } else {
-                square[0] = int(move[move.size() - 2] - 'a');
-                square[1] = int(move[move.size() - 1] - '1');
+                square[0] = int(std::get<0>(move)[std::get<0>(move).size() - 2] - 'a');
+                square[1] = int(std::get<0>(move)[std::get<0>(move).size() - 1] - '1');
             }
             if (grid[square[0]][square[1]]->getSymbol() == 'K' && grid[square[0]][square[1]]->getPieceColour() != pieceColour) {
                 theMove += '+';
                 break;
             }
         }
-        location[0] = tempLocation[0];
-        location[1] = tempLocation[1];
+        location.first = tempLocation.first;
+        location.second = tempLocation.second;
     }
     return theMove;
 }

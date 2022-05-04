@@ -7,16 +7,14 @@
 
 #include "pieceColourType.h"
 
-ChessPiece::ChessPiece(int square[2], PieceColourType colour) {
-    location[0] = square[0];
-    location[1] = square[1];
+ChessPiece::ChessPiece(std::pair<int, int> square, PieceColourType colour) {
+    location = square;
     pieceColour = colour;
     symbol = ' ';
 }
 
-void ChessPiece::setLocation(int a, int b) {
-    location[1] = b;
-    location[0] = a;
+void ChessPiece::setLocation(std::pair<int, int> loc) {
+    location = loc;
 }
 
 void ChessPiece::setPieceColour(PieceColourType colour) {
@@ -35,7 +33,7 @@ void ChessPiece::decreaseMoveCounter() {
     moveCounter--;
 }
 
-int *ChessPiece::getLocation() {
+std::pair<int, int> ChessPiece::getLocation() {
     return location;
 }
 
@@ -55,30 +53,30 @@ int ChessPiece::getMoveCounter() {
     return moveCounter;
 }
 
-std::list<std::string> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
-    std::list<std::string> empty;
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> ChessPiece::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> empty;
     return empty;
 }
 
-bool ChessPiece::spaceEmpty(std::vector<std::vector<ChessPiece *>> &grid, int look[]) {
-    return (grid[look[0]][look[1]]->getPieceColour() == PieceColourType::UNASSIGNED);
+bool ChessPiece::spaceEmpty(std::vector<std::vector<ChessPiece *>> &grid, std::pair<int, int> look) {
+    return (grid[look.first][look.second]->getPieceColour() == PieceColourType::UNASSIGNED);
 }
 
-bool ChessPiece::spaceEnemy(std::vector<std::vector<ChessPiece *>> &grid, int look[]) {
-    if ((pieceColour == PieceColourType::WHITE && grid[look[0]][look[1]]->getPieceColour() == PieceColourType::BLACK) || (pieceColour == PieceColourType::BLACK && grid[look[0]][look[1]]->getPieceColour() == PieceColourType::WHITE)) {
+bool ChessPiece::spaceEnemy(std::vector<std::vector<ChessPiece *>> &grid, std::pair<int, int> look) {
+    if ((pieceColour == PieceColourType::WHITE && grid[look.first][look.second]->getPieceColour() == PieceColourType::BLACK) || (pieceColour == PieceColourType::BLACK && grid[look.first][look.second]->getPieceColour() == PieceColourType::WHITE)) {
         return true;
     } else {
         return false;
     }
 }
 
-std::string ChessPiece::constructMove(int look[], std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
+std::string ChessPiece::constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     theMove += symbol;
     if (enemy) {
         theMove += 'x';
     }
-    theMove += char('a' + look[0]);
-    theMove += char('1' + look[1]);
+    theMove += char('a' + look.first);
+    theMove += char('1' + look.second);
     return theMove;
 }
