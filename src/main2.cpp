@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
                         clicked_pos.second = game.getBoardSize() - 1 - int(Event.mouseButton.y / tile_size);
 
                         piece_is_selected = true;
-                        ChessPiece* selected_piece = game.getGrid()[clicked_pos.first][clicked_pos.second];
+                        std::shared_ptr<ChessPiece> selected_piece = game.getGrid()[clicked_pos.first][clicked_pos.second];
                         // std::cout << "piece clicked: " << chess_piece->getSymbol() << std::endl;
                         // const std::string colour = (chess_piece->getPieceColour() == PieceColourType::WHITE) ? "white" : "black";
                         // std::cout << "colour clicked: " << colour << std::endl;
@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
 
         for (int r = 0; r < game.getBoardSize(); r++) {
             for (int c = 0; c < game.getBoardSize(); c++) {
-                ChessPiece* chess_piece = game.getGrid()[c][game.getBoardSize() - 1 - r];
+                std::shared_ptr<ChessPiece> chess_piece = game.getGrid()[c][game.getBoardSize() - 1 - r];
 
                 sf::Sprite bg_sprite;
 

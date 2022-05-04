@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <list>
+#include <memory>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -29,8 +30,8 @@ class ChessPiece {
     PieceColourType getPieceColour();
     int getMoveCounter();
 
-    virtual std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second);
-    bool spaceEmpty(std::vector<std::vector<ChessPiece *>> &grid, std::pair<int, int> look);
-    bool spaceEnemy(std::vector<std::vector<ChessPiece *>> &grid, std::pair<int, int> look);
-    virtual std::string constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second);
+    virtual std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> possibleMoves(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool second);
+    bool spaceEmpty(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, std::pair<int, int> look);
+    bool spaceEnemy(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, std::pair<int, int> look);
+    virtual std::string constructMove(std::pair<int, int> look, std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool enemy, bool second);
 };

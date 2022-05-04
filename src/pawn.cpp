@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <list>
+#include <memory>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -13,7 +14,7 @@ Pawn::Pawn(std::pair<int, int> square, PieceColourType colour) : ChessPiece(squa
     symbol = 'P';
 }
 
-std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Pawn::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Pawn::possibleMoves(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool second) {
     std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove;
     int start, end, neg;
     if (pieceColour == PieceColourType::WHITE) {
@@ -63,7 +64,7 @@ std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Paw
     return whereMove;
 }
 
-std::string Pawn::constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
+std::string Pawn::constructMove(std::pair<int, int> look, std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     if (enemy) {
         theMove += char('a' + location.first);
@@ -93,11 +94,11 @@ std::string Pawn::constructMove(std::pair<int, int> look, std::vector<std::vecto
             temp.setGrid(grid);
             temp.setWhoseTurn(pieceColour);
             temp.movingPiece(theMove, tempLocation, location);
-            std::vector<std::vector<ChessPiece *>> tempGrid = temp.getGrid();
+            std::vector<std::vector<std::shared_ptr<ChessPiece>>> tempGrid = temp.getGrid();
             tempGrid[location.first][location.second]->setPieceColour(pieceColour);
             PieceColourType colour = tempGrid[location.first][location.second]->getPieceColour();
             checkForCheck = tempGrid[location.first][location.second]->possibleMoves(tempGrid, true);
-            temp.deleteBoard();
+            // temp.deleteBoard();
         }
         for (std::tuple move : checkForCheck) {
             int square[2];

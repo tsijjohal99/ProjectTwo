@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <list>
+#include <memory>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -13,7 +14,7 @@ Queen::Queen(std::pair<int, int> square, PieceColourType colour) : ChessPiece(sq
     maxMovement = 8;
 }
 
-std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Queen::slide(std::vector<std::vector<ChessPiece *>> &grid, int direction[], bool second) {
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Queen::slide(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, int direction[], bool second) {
     std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove;
     std::pair<int, int> look = location;
     for (int i = 1; location.first + i * direction[0] < 8 && location.first + i * direction[0] >= 0 && location.second + i * direction[1] < 8 && location.second + i * direction[1] >= 0 && i < maxMovement; i++) {
@@ -48,7 +49,7 @@ std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Que
     return whereMove;
 }
 
-std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Queen::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Queen::possibleMoves(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool second) {
     std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove;
 
     for (int i = -1; i < 2; i++) {
@@ -69,7 +70,7 @@ std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Que
     return whereMove;
 }
 
-bool Queen::constructMoveSlide(std::string &theMove, std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, int direction[]) {
+bool Queen::constructMoveSlide(std::string &theMove, std::pair<int, int> look, std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, int direction[]) {
     for (int i = 1; look.first + i * direction[0] < 8 && look.first + i * direction[0] >= 0 && look.second + i * direction[1] < 8 && look.second + i * direction[1] >= 0 && i < maxMovement; i++) {
         if (grid[look.first + i * direction[0]][look.second + i * direction[1]]->getPieceColour() == pieceColour && grid[look.first + i * direction[0]][look.second + i * direction[1]]->getSymbol() == symbol && (look.first + i * direction[0] != location.first && look.second + i * direction[1] != location.second)) {
             if (look.first == location.first) {
@@ -83,7 +84,7 @@ bool Queen::constructMoveSlide(std::string &theMove, std::pair<int, int> look, s
     return false;
 }
 
-std::string Queen::constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
+std::string Queen::constructMove(std::pair<int, int> look, std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     bool foundSecond = false;
     theMove += symbol;

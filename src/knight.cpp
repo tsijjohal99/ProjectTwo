@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <tuple>
 
@@ -11,7 +12,7 @@ Knight::Knight(std::pair<int, int> square, PieceColourType colour) : ChessPiece(
     symbol = 'N';
 }
 
-std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Knight::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Knight::possibleMoves(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool second) {
     std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove;
     for (int i = -2; i < 3; i++) {
         for (int j = -2; j < 3; j++) {
@@ -28,7 +29,7 @@ std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> Kni
     return whereMove;
 }
 
-std::string Knight::constructMove(std::pair<int, int> look, std::vector<std::vector<ChessPiece *>> &grid, bool enemy, bool second) {
+std::string Knight::constructMove(std::pair<int, int> look, std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool enemy, bool second) {
     std::string theMove = "";
     bool secondPiece = false;
     theMove += symbol;

@@ -1,6 +1,7 @@
 #include "king.h"
 
 #include <list>
+#include <memory>
 #include <string>
 #include <tuple>
 
@@ -11,7 +12,7 @@ King::King(std::pair<int, int> square, PieceColourType colour) : Queen(square, c
     maxMovement = 2;
 }
 
-void King::checkCastle(std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> &whereMove, std::vector<std::vector<ChessPiece *>> &grid) {
+void King::checkCastle(std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> &whereMove, std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid) {
     if (moveCounter == 0) {
         int y = (getPieceColour() == PieceColourType::WHITE) ? 0 : 7;
         if (grid[0][y]->getSymbol() == 'R') {
@@ -27,7 +28,7 @@ void King::checkCastle(std::list<std::tuple<std::string, std::pair<int, int>, st
     }
 }
 
-std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> King::possibleMoves(std::vector<std::vector<ChessPiece *>> &grid, bool second) {
+std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> King::possibleMoves(std::vector<std::vector<std::shared_ptr<ChessPiece>>> &grid, bool second) {
     std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> whereMove = Queen::possibleMoves(grid, second);
     if (symbol == 'K') {
         checkCastle(whereMove, grid);

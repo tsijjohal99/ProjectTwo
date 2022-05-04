@@ -20,20 +20,20 @@
 #include "rook.h"
 
 Board::Board() {
-    grid.resize(boardSize, std::vector<ChessPiece *>(boardSize));
+    grid.resize(boardSize, std::vector<std::shared_ptr<ChessPiece>>(boardSize));
     createBoard();
     whoseTurn = PieceColourType::WHITE;
 }
 
 Board::~Board() {
-    deleteBoard();
+    // deleteBoard();
 }
 
 int Board::getBoardSize() {
     return boardSize;
 }
 
-std::vector<std::vector<ChessPiece *>> &Board::getGrid() {
+std::vector<std::vector<std::shared_ptr<ChessPiece>>> &Board::getGrid() {
     return grid;
 }
 
@@ -57,7 +57,7 @@ void Board::setBoardSize(int size) {
     boardSize = size;
 }
 
-void Board::setGrid(std::vector<std::vector<ChessPiece *>> theGrid) {
+void Board::setGrid(std::vector<std::vector<std::shared_ptr<ChessPiece>>> theGrid) {
     grid == theGrid;
 }
 
@@ -86,24 +86,24 @@ void Board::createBoard() {
                 colour = PieceColourType::UNASSIGNED;
             }
             if ((i == 0 || i == 7) && (j == 0 || j == 7)) {
-                createPiece(new Rook(square, colour), square);
+                createPiece(std::make_shared<Rook>(square, colour), square);
             } else if ((i == 1 || i == 6) && (j == 0 || j == 7)) {
-                createPiece(new Knight(square, colour), square);
+                createPiece(std::make_shared<Knight>(square, colour), square);
             } else if ((i == 2 || i == 5) && (j == 0 || j == 7)) {
-                createPiece(new Bishop(square, colour), square);
+                createPiece(std::make_shared<Bishop>(square, colour), square);
             } else if (i == 3 && (j == 0 || j == 7)) {
-                createPiece(new Queen(square, colour), square);
+                createPiece(std::make_shared<Queen>(square, colour), square);
             } else if (i == 4 && (j == 0 || j == 7)) {
-                createPiece(new King(square, colour), square);
+                createPiece(std::make_shared<King>(square, colour), square);
                 if (colour == PieceColourType::WHITE) {
                     whiteKing = square;
                 } else {
                     blackKing = square;
                 }
             } else if (j == 1 || j == 6) {
-                createPiece(new Pawn(square, colour), square);
+                createPiece(std::make_shared<Pawn>(square, colour), square);
             } else {
-                createPiece(new ChessPiece(square, colour), square);
+                createPiece(std::make_shared<ChessPiece>(square, colour), square);
             }
         }
     }
@@ -216,9 +216,8 @@ bool Board::checkCheck() {
 bool Board::checkCheckmate() {
     bool checkTemp = isCheck;
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
-    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> withoutCheck = calculateLegalMoves(false);
     isCheck = true;
-    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> withCheck = updateCheck(withoutCheck);  // this line is messing up somehow
+    std::list<std::tuple<std::string, std::pair<int, int>, std::pair<int, int>>> withCheck = calculateLegalMoves(false);  // this line is messing up somehow
     whoseTurn = (whoseTurn == PieceColourType::WHITE) ? PieceColourType::BLACK : PieceColourType::WHITE;
     isCheck = checkTemp;
     return (withCheck.size() == 0);
@@ -295,11 +294,11 @@ void Board::movingPiece(std::string move, std::pair<int, int> original, std::pai
         }
         createPiece(grid[original.first][original.second], target);
 
-        createPiece(new ChessPiece(original, PieceColourType::UNASSIGNED), original);
+        createPiece(std::make_shared<ChessPiece>(original, PieceColourType::UNASSIGNED), original);
         createPiece(grid[0][target.second], std::make_pair(3, target.second));
         grid[3][target.second]->increaseMoveCounter();
         std::pair<int, int> emptySquare = {0, original.second};
-        createPiece(new ChessPiece(emptySquare, PieceColourType::UNASSIGNED), emptySquare);
+        createPiece(std::make_shared<ChessPiece>(emptySquare, PieceColourType::UNASSIGNED), emptySquare);
     } else if (move == "0-0") {
         if (whoseTurn == PieceColourType::WHITE) {
             whiteKing.first = target.first;
@@ -307,32 +306,32 @@ void Board::movingPiece(std::string move, std::pair<int, int> original, std::pai
             blackKing.first = target.first;
         }
         createPiece(grid[original.first][original.second], target);
-        createPiece(new ChessPiece(original, PieceColourType::UNASSIGNED), original);
+        createPiece(std::make_shared<ChessPiece>(original, PieceColourType::UNASSIGNED), original);
 
         createPiece(grid[7][target.second], std::make_pair(5, target.second));
         grid[5][target.second]->increaseMoveCounter();
         std::pair<int, int> emptySquare = {7, original.second};
-        createPiece(new ChessPiece(emptySquare, PieceColourType::UNASSIGNED), emptySquare);
+        createPiece(std::make_shared<ChessPiece>(emptySquare, PieceColourType::UNASSIGNED), emptySquare);
     } else if (move[move.size() - 2] == '=') {
         switch (move[move.size() - 1]) {
             case 'Q': {
-                createPiece(new Queen(target, grid[original.first][original.second]->getPieceColour()), target);
+                createPiece(std::make_shared<Queen>(target, grid[original.first][original.second]->getPieceColour()), target);
                 break;
             }
             case 'R': {
-                createPiece(new Rook(target, grid[original.first][original.second]->getPieceColour()), target);
+                createPiece(std::make_shared<Rook>(target, grid[original.first][original.second]->getPieceColour()), target);
                 break;
             }
             case 'B': {
-                createPiece(new Bishop(target, grid[original.first][original.second]->getPieceColour()), target);
+                createPiece(std::make_shared<Bishop>(target, grid[original.first][original.second]->getPieceColour()), target);
                 break;
             }
             case 'N': {
-                createPiece(new Knight(target, grid[original.first][original.second]->getPieceColour()), target);
+                createPiece(std::make_shared<Knight>(target, grid[original.first][original.second]->getPieceColour()), target);
                 break;
             }
         }
-        createPiece(new ChessPiece(original, PieceColourType::UNASSIGNED), original);
+        createPiece(std::make_shared<ChessPiece>(original, PieceColourType::UNASSIGNED), original);
     } else {
         if (grid[original.first][original.second]->getSymbol() == 'K') {
             if (whoseTurn == PieceColourType::WHITE) {
@@ -348,14 +347,14 @@ void Board::movingPiece(std::string move, std::pair<int, int> original, std::pai
             } else {
                 if (grid[original.first][original.second]->spaceEmpty(grid, target)) {
                     target.second -= (whoseTurn == PieceColourType::WHITE) ? 1 : -1;
-                    createPiece(new ChessPiece(target, PieceColourType::UNASSIGNED), target);
+                    createPiece(std::make_shared<ChessPiece>(target, PieceColourType::UNASSIGNED), target);
                     target.second += (whoseTurn == PieceColourType::WHITE) ? 1 : -1;
                 }
             }
         }
 
         createPiece(grid[original.first][original.second], target);
-        createPiece(new ChessPiece(original, PieceColourType::UNASSIGNED), original);
+        createPiece(std::make_shared<ChessPiece>(original, PieceColourType::UNASSIGNED), original);
     }
     grid[target.first][target.second]->increaseMoveCounter();
 }
@@ -367,7 +366,7 @@ void Board::undoMove() {
         }
 
         listOfMoves.pop_back();
-        deleteBoard();
+        // deleteBoard();
         createBoard();
         PieceColourType colourTurn = whoseTurn;
         whoseTurn = PieceColourType::WHITE;
@@ -430,19 +429,19 @@ bool Board::makeMove(std::tuple<std::string, std::pair<int, int>, std::pair<int,
     return !isCheckmate;
 }
 
-void Board::createPiece(ChessPiece *piece, std::pair<int, int> location) {
-    grid[location.first][location.second] = &*piece;
+void Board::createPiece(std::shared_ptr<ChessPiece> piece, std::pair<int, int> location) {
+    grid[location.first][location.second] = piece;
     piece->setLocation(location);
 }
 
-void Board::removePiece(ChessPiece *piece) {
+/*void Board::removePiece(std::shared_ptr<ChessPiece> piece) {
     delete piece;
-}
+}*/
 
-void Board::deleteBoard() {
+/*void Board::deleteBoard() {
     for (int i = 0; i < boardSize; i++) {
         for (int j = 0; j < boardSize; j++) {
             removePiece(grid[i][j]);
         }
     }
-}
+}*/
